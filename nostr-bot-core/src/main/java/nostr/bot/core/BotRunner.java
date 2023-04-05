@@ -74,6 +74,10 @@ public class BotRunner {
 
         log.log(Level.INFO, "Command value: {0}", value);
     }
+    
+    public void execute(Bot bot) {
+        // TODO
+    }
 
     public String help() {
         return null;
