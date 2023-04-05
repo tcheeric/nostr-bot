@@ -1,2 +1,4 @@
 # nostr-bot
-A bot framework for nostr
+A bot framework for nostr 
+
+// TODO
