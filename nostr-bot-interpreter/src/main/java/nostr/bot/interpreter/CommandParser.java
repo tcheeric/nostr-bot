@@ -24,13 +24,15 @@ public class CommandParser {
     private final String command;
     private final BotRunner botRunner;
     
+    public static final String COMMAND_PREFIX = "!";
+    
     public ICommand parse() {
         ICommand cmd;
 
         String[] arr = command.split(" ");
         String strCmd = arr[0];
 
-        if (strCmd.startsWith("!")) {
+        if (strCmd.startsWith(COMMAND_PREFIX)) {
             
             final String cmdId = strCmd.substring(1);
       
