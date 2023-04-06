@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Annotate the command attributes to map the command parameters
  * @author eric
  */
 @Retention(RetentionPolicy.RUNTIME)

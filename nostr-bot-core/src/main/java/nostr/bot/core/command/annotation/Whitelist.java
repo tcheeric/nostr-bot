@@ -10,16 +10,28 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Security annotation, used to define who can run the command
  * @author eric
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Whitelist {
 
+    /**
+     * Select users nip-05 domains
+     * @return 
+     */
     String[] domains() default {};
 
+    /**
+     * Select users by npub
+     * @return 
+     */
     String[] npubs() default {};
     
+    /**
+     * Select users by groups. The group is defined in a configuration file.
+     * @return 
+     */
     String[] groups() default {};
 }

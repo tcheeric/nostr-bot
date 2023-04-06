@@ -16,7 +16,21 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Command {
+    /**
+     * Command id, must be unique.
+     * @return 
+     */
     String id();
+    
+    /**
+     * Command name.
+     * @return 
+     */
     String name();
+    
+    /**
+     * Use this to define the sequence of execution. The sources-array contains the list of commands that can be executed prior to the current one.
+     * @return 
+     */
     String[] sources();
 }
