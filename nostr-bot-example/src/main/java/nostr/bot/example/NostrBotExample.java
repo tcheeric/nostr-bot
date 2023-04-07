@@ -12,7 +12,7 @@ import lombok.extern.java.Log;
 
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
-import nostr.bot.interpreter.CommandParser;
+import nostr.bot.core.command.CommandParser;
 
 import nostr.id.Identity;
 

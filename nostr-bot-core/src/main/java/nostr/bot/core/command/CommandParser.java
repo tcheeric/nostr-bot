@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package nostr.bot.interpreter;
+package nostr.bot.core.command;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,6 @@ import lombok.NonNull;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.Context;
 import nostr.bot.core.IBot;
-import nostr.bot.core.command.ICommand;
 
 /**
  *

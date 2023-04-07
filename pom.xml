@@ -8,7 +8,6 @@
     <modules>
         <module>nostr-bot-core</module>
         <module>nostr-bot-example</module>
-        <module>nostr-bot-interpreter</module>
         <module>nostr-bot-util</module>
     </modules>
     <properties>
