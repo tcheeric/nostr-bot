@@ -76,7 +76,8 @@ public class BotRunner {
     }
     
     public void execute(Bot bot) {
-        // TODO
+        var command = bot.getSourceCommand();
+        execute(command);
     }
 
     public String help() {

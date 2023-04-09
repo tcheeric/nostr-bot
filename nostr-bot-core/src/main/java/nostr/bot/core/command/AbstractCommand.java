@@ -46,7 +46,7 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
 
                     // Add parameters to context
                     Object attr = new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(this);
-                    context.addParamValue(this.getId()+"#"+f.getName(), attr);
+                    context.addParamValue(this.getId() + "#" + f.getName(), attr);
 
                     // Increment
                     i++;
@@ -65,6 +65,11 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
     public String getId() {
         final Command command = this.getClass().getDeclaredAnnotation(Command.class);
         return command != null ? command.id() : null;
+    }
+
+    public String[] getSources() {
+        final Command command = this.getClass().getDeclaredAnnotation(Command.class);
+        return command != null ? command.sources() : new String[]{};
     }
 
     @Override

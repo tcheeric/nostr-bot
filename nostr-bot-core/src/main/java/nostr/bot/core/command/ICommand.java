@@ -20,4 +20,6 @@ public interface ICommand<T> {
     public void setParameters(Object[] params, Context context);
 
     public String getId();
+    
+    public String[] getSources();
 }

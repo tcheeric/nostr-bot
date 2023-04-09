@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -55,6 +56,10 @@ public class Bot implements IBot {
         this.commands.add(command);
     }
 
+    public ICommand getSourceCommand() {
+        return commands.stream().filter(c -> c.getSources().length == 0).findFirst().get();
+    }
+    
     private void registerCommands() throws IOException {
 
         String[] commandArr = commandsConfiguration.getAllCommands().split(",");
