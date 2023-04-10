@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.github</groupId>
+        <groupId>nostr-bot</groupId>
         <artifactId>nostr-bot</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
@@ -18,16 +18,6 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>nostr-bot-interpreter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github</groupId>
-            <artifactId>nostr-id</artifactId>
-            <version>${nostr-id.version}</version>
         </dependency>
     </dependencies>
     <properties>
