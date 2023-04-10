@@ -4,6 +4,7 @@
  */
 package nostr.bot.core;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidationException;
 import java.io.IOException;
@@ -59,12 +60,12 @@ public class BotRunner {
 
             checkSecurity(command);
 
-        } catch (SecurityException | ValidationException ex) {
+        } catch (RuntimeException ex) {
             this.context.addParamValue(key, ex);
 
             sendDirectMessage("AN ERROR OCCURRED: " + ex.getMessage(), command);
 
-            return;
+            throw ex;
         }
 
         Object value = command.execute(context);
@@ -74,9 +75,9 @@ public class BotRunner {
 
         log.log(Level.INFO, "Command value: {0}", value);
     }
-    
+
     public void execute(Bot bot) {
-        var command = bot.getSourceCommand();
+        var command = bot.getStartCommand();
         execute(command);
     }
 
@@ -154,12 +155,18 @@ public class BotRunner {
     private void validateCommandParameters(@NonNull ICommand command) {
         log.log(Level.FINE, "validate");
 
-        Validation.byProvider(HibernateValidator.class)
+        var constraintViolation = Validation.byProvider(HibernateValidator.class)
                 .configure()
-                .failFast(false)
+                .failFast(true)
                 .buildValidatorFactory()
                 .getValidator()
                 .validate(command);
+
+        
+        if (!constraintViolation.isEmpty()) {
+            final ConstraintViolation<ICommand> cv = constraintViolation.iterator().next();
+            throw new RuntimeException(cv.getPropertyPath() + " " + cv.getMessage());
+        }
     }
 
     private void checkCommandIsInScope(@NonNull ICommand command) {
@@ -169,7 +176,7 @@ public class BotRunner {
 
         if (sources.length > 0) {
             String topStackCommand = this.context.getTopCommandFromStack();
-            if (!Arrays.asList(sources).contains(topStackCommand)) {
+            if (topStackCommand == null || !Arrays.asList(sources).contains(topStackCommand)) {
                 throw new RuntimeException(String.format("Invalid command call. %s cannot be invoked after %s", new Object[]{command.getId(), topStackCommand}));
             }
         }

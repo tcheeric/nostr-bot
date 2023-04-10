@@ -1,0 +1,106 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
+ */
+package nostr.bot.core.command;
+
+import java.util.Arrays;
+import java.util.List;
+import nostr.base.PrivateKey;
+import nostr.bot.factory.EntitiyFactory;
+import nostr.bot.factory.command.TestCommand1;
+import nostr.id.Identity;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+/**
+ *
+ * @author eric
+ */
+public class CommandParserTest {
+
+    @Test
+    public void testParse() {
+        System.out.println("testParse");
+
+        var runner = EntitiyFactory.createBotRunner();
+
+        CommandParser instance = CommandParser.builder().botRunner(runner).command("!command1 12 Satoshi").build();
+        ICommand result = instance.parse();
+
+        assertEquals(TestCommand1.class, result.getClass());
+        assertEquals(12, ((TestCommand1) result).getLength());
+        assertEquals("Satoshi", ((TestCommand1) result).getName());
+    }
+
+    @Test
+    public void testParseFail() {
+        System.out.println("testParseFail");
+
+        var runner = EntitiyFactory.createBotRunner();
+
+        CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 12 Satoshi").build();
+
+        var thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> {
+                    instance.parse();
+                }
+        );
+        Assertions.assertNotNull(thrown);
+    }
+
+    @Test
+    public void testParseFailValidation() {
+        System.out.println("testParseFailValidation");
+
+        var runner = EntitiyFactory.createBotRunner();
+
+        CommandParser instance = CommandParser.builder().botRunner(runner).command("!command1 12").build();
+
+        var thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> {
+                    instance.getBotRunner().execute(instance.parse());
+                }
+        );
+        Assertions.assertNotNull(thrown);
+
+        var context = instance.getBotRunner().getContext();
+        List<Object> values = Arrays.asList(context.getValues("command1"));
+        Assertions.assertNotNull(values.stream().filter(o -> (o instanceof RuntimeException)).findFirst().get());
+    }
+
+    @Test
+    public void testCheckCommandIsInScopeError() {
+        System.out.println("testCheckCommandIsInScopeError");
+
+        var runner = EntitiyFactory.createBotRunner();
+
+        CommandParser instance = CommandParser.builder().botRunner(runner).command("command2").build();
+        String topStackCommand = runner.getContext().getTopCommandFromStack();
+
+        var thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> {
+                    instance.parse();
+                }, String.format("Invalid command call. %s cannot be invoked after %s", new Object[]{"command2", topStackCommand})
+        );
+        Assertions.assertNotNull(thrown);
+    }
+
+    @Test
+    public void testCheckSecurityNpubFail() throws Exception {
+        System.out.println("testCheckSecurityNpubFail");
+
+        var runner = EntitiyFactory.createBotRunner(new Identity(new PrivateKey("00a5f09264f2a9c0db9b16b06e05ecd94ca3fd2fb7bb043a27232473e1525fdc")));        
+
+        CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 32 CSW").build();
+
+        var thrown = Assertions.assertThrows(RuntimeException.class,
+                () -> {
+                    runner.execute(instance.parse());
+                }
+        );
+        Assertions.assertNotNull(thrown);
+    }
+
+}

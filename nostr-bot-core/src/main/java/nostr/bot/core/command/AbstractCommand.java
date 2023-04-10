@@ -41,8 +41,14 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
             List<Field> fields = getParamFields();
             int i = 1;
             for (Field f : fields) {
+                
+                // Missing parameter - break to prevent an OoBE
+                if (i == params.length) {
+                    break;
+                }
+                
                 try {
-                    new PropertyDescriptor(f.getName(), this.getClass()).getWriteMethod().invoke(this, params[i]);
+                    new PropertyDescriptor(f.getName(), this.getClass()).getWriteMethod().invoke(this, getParameterValue(params[i].toString(), f));
 
                     // Add parameters to context
                     Object attr = new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(this);
@@ -67,6 +73,7 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
         return command != null ? command.id() : null;
     }
 
+    @Override
     public String[] getSources() {
         final Command command = this.getClass().getDeclaredAnnotation(Command.class);
         return command != null ? command.sources() : new String[]{};
@@ -99,5 +106,27 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
         Arrays.asList(fields).stream().filter(f -> f.getDeclaredAnnotation(Param.class) != null).forEach(f -> result.add(f));
         Collections.sort(result, (Field t, Field t1) -> t.getDeclaredAnnotation(Param.class).index() - t1.getDeclaredAnnotation(Param.class).index());
         return result;
+    }
+
+    private Object getParameterValue(String value, Field f) {
+        if (String.class.isAssignableFrom(f.getType())) {
+            return value;
+        } else if (Number.class.isAssignableFrom(f.getType())) {
+            if (Integer.class.equals(f.getType())) {
+                return Integer.valueOf(value);
+            } else if (Long.class.equals(f.getType())) {
+                return Long.valueOf(value);
+            } else if (Double.class.equals(f.getType())) {
+                return Double.valueOf(value);
+            } else if (Float.class.equals(f.getType())) {
+                return Float.valueOf(value);
+            } else if (Byte.class.equals(f.getType())) {
+                return Byte.valueOf(value);
+            } else if (Short.class.equals(f.getType())) {
+                return Short.valueOf(value);
+            }
+        }
+
+        throw new RuntimeException("Unsupported attribute type");
     }
 }

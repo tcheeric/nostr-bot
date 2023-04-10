@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -56,10 +55,14 @@ public class Bot implements IBot {
         this.commands.add(command);
     }
 
-    public ICommand getSourceCommand() {
-        return commands.stream().filter(c -> c.getSources().length == 0).findFirst().get();
+    public ICommand getStartCommand() {
+        var optCommand = commands.stream().filter(c -> c.getSources().length == 0).findFirst();
+        if (optCommand.isPresent()) {
+            return optCommand.get();
+        }
+        throw new RuntimeException("Start command not found.");
     }
-    
+
     private void registerCommands() throws IOException {
 
         String[] commandArr = commandsConfiguration.getAllCommands().split(",");
@@ -68,9 +71,14 @@ public class Bot implements IBot {
                 .stream()
                 .forEach(c -> {
                     try {
-                        log.log(Level.INFO, String.format("Registering command %s", c));
+                        log.log(Level.INFO, String.format("Registering command %s...", c));
                         final ICommand command = (ICommand) Class.forName(c).newInstance();
-                        commands.add(command);
+                        if (!commands.contains(command)) {
+                            commands.add(command);
+                            log.log(Level.INFO, String.format("Command %s registered.", c));
+                        } else {
+                            log.log(Level.WARNING, String.format("The command %s was already registered. Skipping...", c));
+                        }
                     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                         log.log(Level.SEVERE, null, ex);
                     }
