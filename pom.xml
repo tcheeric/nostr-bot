@@ -9,6 +9,8 @@
         <module>nostr-bot-core</module>
         <module>nostr-bot-example</module>
         <module>nostr-bot-util</module>
+        <module>nostr-bot-job</module>
+        <module>nostr-bot-client</module>
     </modules>
     <build>
         <pluginManagement>

@@ -6,7 +6,6 @@ package nostr.bot.core;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
-import jakarta.validation.ValidationException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
