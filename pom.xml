@@ -42,6 +42,9 @@
         <nostr-id.version>0.1-SNAPSHOT</nostr-id.version>
         <nostr-poh-util.version>0.1-SNAPSHOT</nostr-poh-util.version>
         <nostr-base.version>0.1-SNAPSHOT</nostr-base.version>
+        <quartz.version>2.3.2</quartz.version>
+        <maven-surefire-plugin>2.22.0</maven-surefire-plugin>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
