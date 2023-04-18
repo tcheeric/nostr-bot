@@ -21,6 +21,7 @@ public @interface Whitelist {
      * Select users nip-05 domains
      * @return 
      */
+    @Deprecated(forRemoval = true)
     String[] domains() default {};
 
     /**

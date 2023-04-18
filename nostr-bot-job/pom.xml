@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>nostr-bot</groupId>
+        <artifactId>nostr-bot</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>nostr-bot-job</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>nostr-java</groupId>
+            <artifactId>nostr-event</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nostr-java</groupId>
+            <artifactId>nostr-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nostr-java</groupId>
+            <artifactId>nostr-id</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nostr-bot-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+
+    </dependencies>
+    <properties>
+        <exec.mainClass>nostr.bot.job.NostrBotJob</exec.mainClass>
+    </properties>
+</project>
