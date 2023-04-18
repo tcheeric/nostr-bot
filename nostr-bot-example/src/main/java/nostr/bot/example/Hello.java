@@ -18,7 +18,7 @@ import nostr.bot.core.command.annotation.Whitelist;
  *
  * @author eric
  */
-@Command(id = "hello", name = "Hello Command", sources = {})
+@Command(id = "hello", name = "Hello Command", parents = {})
 @Whitelist(groups = {"admin"})
 @Log
 @Data

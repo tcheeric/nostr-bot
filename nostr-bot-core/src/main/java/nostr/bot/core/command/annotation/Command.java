@@ -29,8 +29,8 @@ public @interface Command {
     String name();
     
     /**
-     * Use this to define the sequence of execution. The sources-array contains the list of commands that can be executed prior to the current one.
+     * Use this to define the sequence of execution. The parents-array contains the list of commands that can be executed prior to the current one.
      * @return 
      */
-    String[] sources();
+    String[] parents();
 }
