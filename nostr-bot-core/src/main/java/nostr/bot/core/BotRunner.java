@@ -171,7 +171,7 @@ public class BotRunner {
     private void checkCommandIsInScope(@NonNull ICommand command) {
         log.log(Level.FINE, "checkExecutionOrder");
 
-        String[] sources = command.getClass().getDeclaredAnnotation(Command.class).sources();
+        String[] sources = command.getClass().getDeclaredAnnotation(Command.class).parents();
 
         if (sources.length > 0) {
             String topStackCommand = this.context.getTopCommandFromStack();

@@ -76,7 +76,7 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
     @Override
     public String[] getSources() {
         final Command command = this.getClass().getDeclaredAnnotation(Command.class);
-        return command != null ? command.sources() : new String[]{};
+        return command != null ? command.parents() : new String[]{};
     }
 
     @Override
