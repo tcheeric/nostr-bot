@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.java.Log;
@@ -59,12 +60,12 @@ public class BotRunner {
 
             checkSecurity(command);
 
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException | NostrException ex) {
             this.context.addParamValue(key, ex);
 
             sendDirectMessage("AN ERROR OCCURRED: " + ex.getMessage(), command);
 
-            throw ex;
+            throw new RuntimeException(ex);
         }
 
         Object value = command.execute(context);
@@ -106,7 +107,7 @@ public class BotRunner {
 
                 final GenericMessage message = new EventMessage(event);
 
-                final var client = new Client("nostr-bot", "/relays.properties", rcptId);
+                final var client = new Client("/relays.properties");
                 client.send(message);
             } catch (NostrException | IOException ex) {
                 log.log(Level.SEVERE, null, ex);
@@ -114,11 +115,11 @@ public class BotRunner {
         });
     }
 
-    private void checkSecurity(ICommand command) {
+    private void checkSecurity(ICommand command) throws NostrException {
         Whitelist whitelist = command.getClass().getDeclaredAnnotation(Whitelist.class);
         if (whitelist != null) {
 
-            var npub = this.context.getIdentity().getPublicKey().toBech32();
+            var npub = this.context.getIdentity().getPublicKey().getBech32();
             var npubOpt = Arrays.asList(whitelist.npubs()).stream().filter(n -> n.equalsIgnoreCase(npub)).findFirst();
             if (npubOpt.isEmpty()) {
 

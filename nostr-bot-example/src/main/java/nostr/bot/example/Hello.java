@@ -5,6 +5,7 @@
 package nostr.bot.example;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.java.Log;
@@ -13,6 +14,7 @@ import nostr.bot.core.command.AbstractCommand;
 import nostr.bot.core.command.annotation.Command;
 import nostr.bot.core.command.annotation.Param;
 import nostr.bot.core.command.annotation.Whitelist;
+import nostr.util.NostrException;
 
 /**
  *
@@ -38,7 +40,12 @@ public class Hello extends AbstractCommand<String> {
 
     @Override
     public String execute(Context context) {
-        return sayHi(context);
+        try {
+            return sayHi(context);
+        } catch (NostrException ex) {
+            log.log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -47,8 +54,8 @@ public class Hello extends AbstractCommand<String> {
         return null;
     }
 
-    private String sayHi(Context context) {
-        var tmp = this.name == null ? context.getIdentity().getPublicKey().toBech32() : this.name;
+    private String sayHi(Context context) throws NostrException {
+        var tmp = this.name == null ? context.getIdentity().getPublicKey().getBech32() : this.name;
         return "Hi " + tmp;
     }
 }
