@@ -8,11 +8,19 @@
     </parent>
     <artifactId>nostr-bot-job</artifactId>
     <packaging>jar</packaging>
+    
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>    
+    
     <dependencies>
         <dependency>
-            <groupId>nostr-java</groupId>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
             <artifactId>nostr-event</artifactId>
-            <version>${project.version}</version>
+            <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -20,14 +28,14 @@
             <version>${lombok.version}</version>
         </dependency>
         <dependency>
-            <groupId>nostr-java</groupId>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
             <artifactId>nostr-base</artifactId>
-            <version>${project.version}</version>
+            <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>nostr-java</groupId>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
             <artifactId>nostr-id</artifactId>
-            <version>${project.version}</version>
+            <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -39,8 +47,8 @@
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-
     </dependencies>
+    
     <properties>
         <exec.mainClass>nostr.bot.job.NostrBotJob</exec.mainClass>
     </properties>

@@ -39,7 +39,7 @@
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
         <expressly.version>5.0.0</expressly.version>
         <lombok.version>1.18.26</lombok.version>
-        <nostr-id.version>0.1-SNAPSHOT</nostr-id.version>
+        <nostr-java.version>v0.001.00</nostr-java.version>
         <nostr-poh-util.version>0.1-SNAPSHOT</nostr-poh-util.version>
         <nostr-base.version>0.1-SNAPSHOT</nostr-base.version>
         <quartz.version>2.3.2</quartz.version>

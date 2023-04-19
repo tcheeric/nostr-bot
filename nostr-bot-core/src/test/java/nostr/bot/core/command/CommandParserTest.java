@@ -4,12 +4,14 @@
  */
 package nostr.bot.core.command;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import nostr.base.PrivateKey;
 import nostr.bot.factory.EntitiyFactory;
 import nostr.bot.factory.command.TestCommand1;
 import nostr.id.Identity;
+import nostr.util.NostrException;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class CommandParserTest {
 
     @Test
-    public void testParse() {
+    public void testParse() throws IOException, NostrException {
         System.out.println("testParse");
 
         var runner = EntitiyFactory.createBotRunner();
@@ -35,7 +37,7 @@ public class CommandParserTest {
     }
 
     @Test
-    public void testParseFail() {
+    public void testParseFail() throws IOException, NostrException {
         System.out.println("testParseFail");
 
         var runner = EntitiyFactory.createBotRunner();
@@ -51,7 +53,7 @@ public class CommandParserTest {
     }
 
     @Test
-    public void testParseFailValidation() {
+    public void testParseFailValidation() throws IOException, NostrException {
         System.out.println("testParseFailValidation");
 
         var runner = EntitiyFactory.createBotRunner();
@@ -71,7 +73,7 @@ public class CommandParserTest {
     }
 
     @Test
-    public void testCheckCommandIsInScopeError() {
+    public void testCheckCommandIsInScopeError() throws IOException, NostrException {
         System.out.println("testCheckCommandIsInScopeError");
 
         var runner = EntitiyFactory.createBotRunner();
