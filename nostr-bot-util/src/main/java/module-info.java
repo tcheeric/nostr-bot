@@ -33,7 +33,6 @@ module nostr.bot.util {
     requires org.eclipse.jetty.http2.http.client.transport;
     requires org.eclipse.jetty.alpn.java.client;
     requires org.slf4j;
-    requires nostr.plugin;
     requires org.bouncycastle.provider;
     requires nostr.ws.handler;    
     
