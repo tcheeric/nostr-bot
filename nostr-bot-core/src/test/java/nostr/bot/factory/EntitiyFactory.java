@@ -5,8 +5,6 @@
 package nostr.bot.factory;
 
 import java.io.IOException;
-import nostr.base.PrivateKey;
-import nostr.base.PublicKey;
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.IBot;
@@ -24,7 +22,7 @@ public class EntitiyFactory {
     }
 
     public static BotRunner createBotRunner(IBot bot) throws IOException, NostrException {
-        return createBotRunner(bot, new Identity("/profile.properties"));
+        return createBotRunner(bot, createIdentity());
     }
 
     public static BotRunner createBotRunner(IBot bot, Identity identity) {
@@ -32,10 +30,15 @@ public class EntitiyFactory {
     }
 
     public static BotRunner createBotRunner() throws IOException, NostrException {
-        return createBotRunner(new Identity("/profile.properties"));
+        return createBotRunner(createIdentity());
     }
 
     public static BotRunner createBotRunner(Identity identity) throws IOException, NostrException {
-        return new BotRunner(createBot(), new Identity("/profile.properties"));
+        return new BotRunner(createBot(), createIdentity());
     }
+
+    private static Identity createIdentity() throws IOException, NostrException {
+        return new Identity("/profile.properties");
+    }
+
 }

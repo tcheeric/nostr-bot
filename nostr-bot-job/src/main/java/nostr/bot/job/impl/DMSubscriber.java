@@ -18,10 +18,6 @@ import nostr.util.NostrException;
 @Log
 public class DMSubscriber extends AbstractSubscriber {
 
-    public DMSubscriber() {
-        this(null, null);
-    }
-
     public DMSubscriber(String subscriptionId, String jsonEvent) {
         super(subscriptionId, jsonEvent);
     }

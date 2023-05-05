@@ -5,7 +5,6 @@
 package nostr.bot.example;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.java.Log;
@@ -25,16 +24,16 @@ import nostr.util.NostrException;
 @Log
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Hello extends AbstractCommand<String> {
+public class HelloCommand extends AbstractCommand<String> {
 
     @Param(name = "name", index = 0)
     private String name;
 
-    public Hello() {
+    public HelloCommand() {
         super();
     }
 
-    public Hello(String name) {
+    public HelloCommand(String name) {
         this.name = name;
     }
 

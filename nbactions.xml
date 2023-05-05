@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-copy-dependencies</actionName>
+            <displayName>copy-dependencies</displayName>
+            <goals>
+                <goal>dependency:copy-dependencies</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-one-jar</actionName>
+            <displayName>one-jar</displayName>
+            <goals>
+                <goal>one-jar</goal>
+            </goals>
+        </action>
+    </actions>

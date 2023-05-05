@@ -52,9 +52,9 @@ public class AbstractPublisher implements IPublisher {
 
         try {
             var kinds = new KindList();
-            kinds.add(AbstractPublisher.this.kind);
+            kinds.add(this.kind);
             var referencePubKeys = new PublicKeyList();
-            referencePubKeys.add(AbstractPublisher.this.recipient);
+            referencePubKeys.add(this.recipient);
 
             synchronized (AbstractPublisher.class) {
                 var since = BotUtil.readLongFromFile(datafile);

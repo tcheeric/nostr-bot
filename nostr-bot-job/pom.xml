@@ -9,33 +9,52 @@
     <artifactId>nostr-bot-job</artifactId>
     <packaging>jar</packaging>
     
+    <!--
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>    
-    
+    -->
+        
     <dependencies>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-event</artifactId>
             <version>${nostr-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>nostr-java</groupId>
+                    <artifactId>nostr-types</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-base</artifactId>
             <version>${nostr-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>nostr-java</groupId>
+                    <artifactId>nostr-types</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-id</artifactId>
             <version>${nostr-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>nostr-java</groupId>
+                    <artifactId>nostr-types</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -46,6 +65,11 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nostr-java</groupId>
+            <artifactId>nostr-ws-handler-interface</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     

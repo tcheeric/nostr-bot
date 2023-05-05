@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 import nostr.bot.job.NostrJob;
 import nostr.bot.util.JobConfiguration;
-import nostr.util.NostrException;
 import static org.quartz.JobBuilder.newJob;
 import org.quartz.SchedulerException;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -22,11 +21,11 @@ import org.quartz.impl.StdSchedulerFactory;
 @Log
 public class NostrBotClient {
 
-    public static void main(String[] args) throws NostrException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         NostrBotClient.schedule();
     }
 
-    public static void schedule() throws NostrException, InterruptedException {
+    public static void schedule() throws InterruptedException {
         try {
             var scheduler = StdSchedulerFactory.getDefaultScheduler();
 

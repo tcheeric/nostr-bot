@@ -10,12 +10,12 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-base</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
@@ -26,7 +26,4 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-    <properties>
-        <exec.mainClass>nostr.bot.util.NostrBotUtil</exec.mainClass>
-    </properties>
 </project>

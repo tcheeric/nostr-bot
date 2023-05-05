@@ -26,7 +26,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.expressly</groupId>
@@ -39,7 +38,7 @@
             <version>${hibernate-validator-cdi.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <groupId>nostr-java</groupId>
             <artifactId>nostr-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
@@ -67,12 +66,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+    <!--
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-    
+    -->
 </project>
