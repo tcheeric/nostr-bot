@@ -8,12 +8,11 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.java.Log;
+import nostr.base.PublicKey;
 import nostr.bot.core.command.ICommand;
 import nostr.bot.core.command.annotation.Command;
 import nostr.bot.core.command.annotation.Whitelist;
@@ -39,11 +38,13 @@ public class BotRunner {
 
     private final IBot bot;
     private final Context context;
+    private final PublicKey recipient;
 
-    public BotRunner(IBot bot, Identity identity) {
+    public BotRunner(IBot bot, Identity identity, PublicKey recipient) {
         this.bot = bot;
         this.context = new Context();
         this.context.setIdentity(identity);
+        this.recipient = recipient;
     }
 
     public void execute(ICommand command) {
@@ -63,7 +64,7 @@ public class BotRunner {
         } catch (RuntimeException | NostrException ex) {
             this.context.addParamValue(key, ex);
 
-            sendDirectMessage("AN ERROR OCCURRED: " + ex.getMessage(), command);
+            sendDirectMessage(recipient, "AN ERROR OCCURRED: " + ex.getMessage(), command);
 
             throw new RuntimeException(ex);
         }
@@ -71,9 +72,9 @@ public class BotRunner {
         Object value = command.execute(context);
         this.context.addParamValue(key, value);
 
-        sendDirectMessage(value.toString(), command);
+        sendDirectMessage(recipient, value.toString(), command);
 
-        log.log(Level.INFO, "Command value: {0}", value);
+        log.log(Level.INFO, "Command value: {0}", value.toString());
     }
 
     public void execute(Bot bot) {
@@ -89,30 +90,39 @@ public class BotRunner {
         return command.getHelp();
     }
 
-    private void sendDirectMessage(String content, ICommand command) {
+    private void sendDirectMessage(PublicKey recipient, String content, ICommand command) {
 
-        var executor = Executors.newSingleThreadExecutor();
+        log.log(Level.INFO, "Sending DM reply with content {0} from command {1}", new Object[]{content, command.getId()});
+//        var executor = Executors.newSingleThreadExecutor();
+//
+//        executor.submit(() -> {
+        try {
+            final var tagList = new TagList();
+            //final var rcptId = this.context.getIdentity();
+            tagList.add(PubKeyTag.builder().publicKey(recipient).build());
 
-        executor.submit(() -> {
-            try {
-                final var tagList = new TagList();
-                final var rcptId = this.context.getIdentity();
-                tagList.add(PubKeyTag.builder().publicKey(rcptId.getPublicKey()).build());
+            final var sender = getAdmin(command);
+            final var event = new DirectMessageEvent(sender.getPublicKey(), tagList, content);
 
-                final var sender = getAdmin(command);
-                final var event = new DirectMessageEvent(sender.getPublicKey(), tagList, content);
+            sender.encryptDirectMessage(event);
+            sender.sign(event);
 
-                sender.encryptDirectMessage(event);
-                sender.sign(event);
+            final GenericMessage message = new EventMessage(event);
 
-                final GenericMessage message = new EventMessage(event);
+            log.log(Level.INFO, "Message: {0}", message);
 
-                final var client = new Client("/relays.properties");
-                client.send(message);
-            } catch (NostrException | IOException ex) {
-                log.log(Level.SEVERE, null, ex);
-            }
-        });
+            final var client = new Client("/relays.properties");
+
+            do {
+                Thread.sleep(5000);
+            } while (client.getThreadPool().getCompletedTaskCount() < (client.getRelays().size() / 2));
+
+            client.send(message);
+
+        } catch (NostrException | IOException | InterruptedException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+//        });
     }
 
     private void checkSecurity(ICommand command) throws NostrException {
@@ -162,7 +172,6 @@ public class BotRunner {
                 .getValidator()
                 .validate(command);
 
-        
         if (!constraintViolation.isEmpty()) {
             final ConstraintViolation<ICommand> cv = constraintViolation.iterator().next();
             throw new RuntimeException(cv.getPropertyPath() + " " + cv.getMessage());

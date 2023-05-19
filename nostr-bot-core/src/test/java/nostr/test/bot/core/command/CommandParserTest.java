@@ -2,14 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
  */
-package nostr.bot.core.command;
+package nostr.test.bot.core.command;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import nostr.base.PrivateKey;
-import nostr.bot.factory.EntitiyFactory;
-import nostr.bot.factory.command.TestCommand1;
+import nostr.bot.core.command.CommandParser;
+import nostr.bot.core.command.ICommand;
+import nostr.test.bot.factory.EntitiyFactory;
+import nostr.test.bot.factory.command.TestCommand1;
 import nostr.id.Identity;
 import nostr.util.NostrException;
 import org.junit.jupiter.api.Assertions;

@@ -4,11 +4,19 @@
  */
 package nostr.bot.job.impl;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import nostr.base.Command;
+import nostr.base.PublicKey;
 import nostr.base.Relay;
+import nostr.bot.core.Bot;
+import nostr.bot.core.BotRunner;
+import nostr.bot.core.command.CommandParser;
+import nostr.event.unmarshaller.impl.EventUnmarshaller;
+import nostr.id.Identity;
+import nostr.util.NostrException;
 import nostr.ws.handler.command.spi.ICommandHandler;
 
 /**
@@ -36,12 +44,41 @@ public class BotCommandHandler implements ICommandHandler {
 
     @Override
     public void onEvent(String jsonEvent, String subId, Relay relay) {
-        log.log(Level.INFO, ">>>> Command: {0} - Event: {1} - Subscription ID: {2} - Relay {3}", new Object[]{Command.EVENT, jsonEvent, subId, relay});
+        try {
+            final var botRunner = getBotRunner(jsonEvent);
+
+            final String strCmd = getCommand(jsonEvent);
+
+            final var cmd = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
+
+            botRunner.execute(cmd);
+        } catch (IOException | NostrException ex) {
+            log.log(Level.SEVERE, null, ex);
+        }
+
     }
 
     @Override
     public void onAuth(String challenge, Relay relay) {
         log.log(Level.INFO, "Command: {0} - Challenge: {1} - Relay {3}", new Object[]{Command.AUTH, challenge, relay});
     }
-    
+
+    private BotRunner getBotRunner(String jsonEvent) throws IOException, NostrException {
+        final var identity = new Identity("/profile.properties");
+        final var bot = new Bot();
+        final PublicKey recipient = getRecipient(jsonEvent);
+
+        return new BotRunner(bot, identity, recipient);
+    }
+
+    private String getCommand(String jsonEvent) throws IOException, NostrException {
+        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
+        final var id = new Identity("/profile.properties");
+        return id.decryptDirectMessage(dmEvent.getContent(), dmEvent.getPubKey());
+    }
+
+    private PublicKey getRecipient(String jsonEvent) {
+        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
+        return dmEvent.getPubKey();
+    }
 }

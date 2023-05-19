@@ -10,12 +10,14 @@ import java.util.logging.Level;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.java.Log;
+import nostr.base.PublicKey;
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.IBot;
 import nostr.bot.core.command.CommandParser;
 import nostr.bot.job.ISubscriber;
 import nostr.bot.util.BotUtil;
+import nostr.event.unmarshaller.impl.EventUnmarshaller;
 import nostr.util.NostrException;
 
 /**
@@ -56,8 +58,14 @@ public abstract class AbstractSubscriber implements ISubscriber {
 
     protected abstract String getContent();
 
-    private static BotRunner getBotRunner() throws IOException, NostrException {
-        final IBot bot = new Bot("/commands.properties");
-        return new BotRunner(bot, BotUtil.IDENTITY);
+    private BotRunner getBotRunner() throws IOException, NostrException {
+        final IBot bot = new Bot();
+        return new BotRunner(bot, BotUtil.IDENTITY, getRecipient());
     }
+
+    private PublicKey getRecipient() {
+        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
+        return dmEvent.getPubKey();
+    }
+
 }

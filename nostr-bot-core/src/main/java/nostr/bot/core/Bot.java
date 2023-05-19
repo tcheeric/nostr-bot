@@ -4,12 +4,11 @@
  */
 package nostr.bot.core;
 
-import java.io.IOException;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 
 import lombok.Data;
@@ -18,7 +17,6 @@ import lombok.extern.java.Log;
 
 import nostr.bot.core.command.ICommand;
 import nostr.bot.core.command.annotation.Command;
-import nostr.bot.util.CommandsConfiguration;
 
 /**
  *
@@ -28,18 +26,18 @@ import nostr.bot.util.CommandsConfiguration;
 @Log
 public class Bot implements IBot {
 
-    private final Set<ICommand> commands;
-    private final CommandsConfiguration commandsConfiguration;
+    private final List<ICommand> commands;
 
-    public Bot(String configFileName) {
-        this.commands = new HashSet<>();
-        try {
-            this.commandsConfiguration = new CommandsConfiguration(configFileName, "command");
-            this.registerCommands();
-        } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
+    public Bot() {
+
+        this.commands = new ArrayList<>();
+        
+        ServiceLoader
+                .load(ICommand.class)
+                .stream()
+                .map(p -> p.get())
+                .filter(c -> c.getClass().isAnnotationPresent(Command.class))
+                .forEach(c -> registerCommand(c));
     }
 
     @Override
@@ -52,7 +50,14 @@ public class Bot implements IBot {
 
     @Override
     public void registerCommand(ICommand command) {
-        this.commands.add(command);
+        log.log(Level.INFO, String.format("Registering command %s...", command));
+
+        if (!commands.contains(command)) {
+            this.commands.add(command);
+            log.log(Level.INFO, String.format("Command %s registered.", command));
+        } else {
+            log.log(Level.WARNING, String.format("The command %s was already registered. Skipping...", command));
+        }
     }
 
     public ICommand getStartCommand() {
@@ -61,27 +66,5 @@ public class Bot implements IBot {
             return optCommand.get();
         }
         throw new RuntimeException("Start command not found.");
-    }
-
-    private void registerCommands() throws IOException {
-
-        String[] commandArr = commandsConfiguration.getAllCommands().split(",");
-
-        Arrays.asList(commandArr)
-                .stream()
-                .forEach(c -> {
-                    try {
-                        log.log(Level.INFO, String.format("Registering command %s...", c));
-                        final ICommand command = (ICommand) Class.forName(c).newInstance();
-                        if (!commands.contains(command)) {
-                            commands.add(command);
-                            log.log(Level.INFO, String.format("Command %s registered.", c));
-                        } else {
-                            log.log(Level.WARNING, String.format("The command %s was already registered. Skipping...", c));
-                        }
-                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                        log.log(Level.SEVERE, null, ex);
-                    }
-                });
     }
 }

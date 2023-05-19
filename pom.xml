@@ -56,7 +56,7 @@
                             <phase>package</phase>
                         </execution>
                     </executions>
-                </plugin>                
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -79,19 +79,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
-                    
+                    <version>3.1.0</version>                    
                     <configuration>
                         <archive>
                             <manifest>
                                 <addClasspath>true</addClasspath>
-                                <classpathPrefix>libs/</classpathPrefix>
+                                <classpathPrefix>libs/</classpathPrefix>                                
                                 <mainClass>nostr.bot.client.NostrBotClient</mainClass>                                
                             </manifest>
                         </archive>
                     </configuration>
-
-                </plugin>               
+                </plugin>
             </plugins>                            
         </pluginManagement>
     </build>

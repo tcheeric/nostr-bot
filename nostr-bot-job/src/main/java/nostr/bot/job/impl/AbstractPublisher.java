@@ -6,7 +6,6 @@ package nostr.bot.job.impl;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -39,6 +38,7 @@ public class AbstractPublisher implements IPublisher {
         var jc = new JobConfiguration("data");
         var datafile = jc.getDataFile();
         var client = new Client("/relays.properties");
+        long since;
 
         //Wait it until tried to connect to a half of relays
         do {
@@ -52,26 +52,27 @@ public class AbstractPublisher implements IPublisher {
 
         try {
             var kinds = new KindList();
+            
             kinds.add(this.kind);
             var referencePubKeys = new PublicKeyList();
             referencePubKeys.add(this.recipient);
-
+            
             synchronized (AbstractPublisher.class) {
-                var since = BotUtil.readLongFromFile(datafile);
-
-                log.log(Level.INFO, "Filtering event since {0}", since);
-                var filters = Filters.builder().kinds(kinds).referencePubKeys(referencePubKeys).since(since).build();
-
-                log.log(Level.INFO, "Filters: {0}", filters);
-
-                GenericMessage message = new ReqMessage("nostr-bot", filters);
-
-                log.log(Level.INFO, "Sending message {0}", message);
-                client.send(message);
+                since = BotUtil.readLongFromFile(datafile);
             }
+            log.log(Level.INFO, "Filtering event since {0}", since);
+            var filters = Filters.builder().kinds(kinds).referencePubKeys(referencePubKeys).since(since).build();
+
+            log.log(Level.INFO, "Filters: {0}", filters);
+
+            GenericMessage message = new ReqMessage("nostr-bot", filters);
+
+            log.log(Level.INFO, "Sending message {0}", message);
+            client.send(message);
+
         } finally {
             synchronized (AbstractPublisher.class) {
-                var since = Instant.now().getEpochSecond();
+                since = Instant.now().getEpochSecond();
                 BotUtil.storeLongToFile(since, datafile);
             }
         }

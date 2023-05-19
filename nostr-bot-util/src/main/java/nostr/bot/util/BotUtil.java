@@ -26,7 +26,7 @@ public class BotUtil {
 
     public static long readLongFromFile(String filename) {
 
-        long value = 0;
+        long value = System.currentTimeMillis();
         try {
 
             if (!new File(filename).exists()) {
