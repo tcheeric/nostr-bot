@@ -13,6 +13,7 @@ import nostr.bot.core.command.AbstractCommand;
 import nostr.bot.core.command.annotation.Command;
 import nostr.bot.core.command.annotation.Param;
 import nostr.bot.core.command.annotation.Whitelist;
+import nostr.util.NostrException;
 
 /**
  *
@@ -23,22 +24,27 @@ import nostr.bot.core.command.annotation.Whitelist;
 @Log
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Hello extends AbstractCommand<String> {
+public class HelloCommand extends AbstractCommand<String> {
 
     @Param(name = "name", index = 0)
     private String name;
 
-    public Hello() {
+    public HelloCommand() {
         super();
     }
 
-    public Hello(String name) {
+    public HelloCommand(String name) {
         this.name = name;
     }
 
     @Override
     public String execute(Context context) {
-        return sayHi(context);
+        try {
+            return sayHi(context);
+        } catch (NostrException ex) {
+            log.log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -47,8 +53,8 @@ public class Hello extends AbstractCommand<String> {
         return null;
     }
 
-    private String sayHi(Context context) {
-        var tmp = this.name == null ? context.getIdentity().getPublicKey().toBech32() : this.name;
+    private String sayHi(Context context) throws NostrException {
+        var tmp = this.name == null ? context.getIdentity().getPublicKey().getBech32() : this.name;
         return "Hi " + tmp;
     }
 }

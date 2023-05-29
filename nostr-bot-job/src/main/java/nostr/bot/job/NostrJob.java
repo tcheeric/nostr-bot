@@ -15,6 +15,7 @@ import nostr.bot.job.impl.DMPublisher;
 import nostr.bot.job.impl.TextNotePublisher;
 import nostr.bot.util.BotUtil;
 import nostr.bot.util.JobConfiguration;
+import nostr.util.NostrException;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -34,23 +35,25 @@ public class NostrJob implements Job {
             JobKey jobKey = context.getJobDetail().getKey();
             log.log(Level.INFO, "Executing job: {0} executing at {1},fired by: {2}", new Object[]{jobKey, new Date(), context.getTrigger().getKey()});
             IPublisher publisher = getPublisher();
-            publisher.publish();
+            publisher.publish(BotUtil.createClient());
         } catch (Exception ex) {
-            log.log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
     }
 
-    private IPublisher getPublisher() throws IOException {
+    private IPublisher getPublisher() throws IOException, NostrException {
 
         JobConfiguration jc = new JobConfiguration("job");
         var mode = Mode.valueOf(jc.getMode());
 
         switch (mode) {
             case PRIVATE -> {
-                return new DMPublisher(BotUtil.IDENTITY.getPublicKey());
+                //return new DMPublisher(BotUtil.IDENTITY.getPublicKey());
+                return new DMPublisher();
             }
             case PUBLIC -> {
-                return new TextNotePublisher(BotUtil.IDENTITY.getPublicKey());
+                //return new TextNotePublisher(BotUtil.IDENTITY.getPublicKey());
+                return new TextNotePublisher();
             }
             default ->
                 throw new AssertionError();

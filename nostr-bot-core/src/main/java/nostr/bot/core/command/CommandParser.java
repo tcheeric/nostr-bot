@@ -4,12 +4,16 @@
  */
 package nostr.bot.core.command;
 
+import java.text.ParseException;
+import java.util.logging.Level;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.Context;
 import nostr.bot.core.IBot;
+import nostr.util.NostrException;
 
 /**
  *
@@ -17,6 +21,7 @@ import nostr.bot.core.IBot;
  */
 @Data
 @Builder
+@Log
 public class CommandParser {
 
     @NonNull
@@ -25,7 +30,10 @@ public class CommandParser {
     
     public static final String COMMAND_PREFIX = "!";
     
-    public ICommand parse() {
+    public ICommand parse() throws ParseException, NostrException {
+        
+        log.log(Level.INFO, ">>> Parsing content: {0}", command);
+        
         ICommand cmd;
 
         String[] arr = command.split(" ");
@@ -39,11 +47,13 @@ public class CommandParser {
             if (bot.getCommand(cmdId).isPresent()) {
                 cmd = bot.getCommand(cmdId).get();
                 Context context = botRunner.getContext();
-                cmd.setParameters(arr, context);
+                cmd.setParameterValues(arr, context);
                 return cmd;
             }
+            
+            throw new NostrException(String.format("Command %s plug-in not loaded in classpath", cmdId));
         }
 
-        throw new RuntimeException("Parsing error at index 0");
+        throw new ParseException("Parsing error at index 0", 0);
     }
 }

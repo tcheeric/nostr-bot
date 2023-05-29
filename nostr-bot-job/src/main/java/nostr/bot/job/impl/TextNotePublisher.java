@@ -4,8 +4,10 @@
  */
 package nostr.bot.job.impl;
 
-import nostr.base.PublicKey;
+import java.io.IOException;
 import nostr.event.Kind;
+import nostr.id.Identity;
+import nostr.util.NostrException;
 
 /**
  *
@@ -13,7 +15,7 @@ import nostr.event.Kind;
  */
 public class TextNotePublisher extends AbstractPublisher {
 
-    public TextNotePublisher(PublicKey publicKey) {
-        super(Kind.TEXT_NOTE, publicKey);
+    public TextNotePublisher() throws IOException, NostrException {
+        super(Kind.TEXT_NOTE, Identity.getInstance().getPublicKey());
     }    
 }

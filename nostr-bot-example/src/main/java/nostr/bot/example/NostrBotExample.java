@@ -5,10 +5,12 @@ package nostr.bot.example;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 
 import java.util.logging.LogManager;
 
 import lombok.extern.java.Log;
+import nostr.base.PublicKey;
 
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
@@ -35,19 +37,20 @@ public class NostrBotExample {
         }
     }
 
-    public static void main(String[] args) throws IOException, NostrException {
+    public static void main(String[] args) throws IOException, NostrException, ParseException {
 
         final var botRunner = getBotRunner();
         
         final String strCmd = "!hello world";
-        final var hello = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
+        final var helloCmd = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
 
-        botRunner.execute(hello);
+        botRunner.execute(helloCmd);
     }
     
     private static BotRunner getBotRunner() throws IOException, NostrException {
-        final var identity = new Identity("/profile.properties");
-        final var bot = new Bot("/commands.properties");
-        return new BotRunner(bot, identity);        
+        //final var identity = new Identity("/profile.properties");
+        Identity identity = Identity.getInstance();
+        final var bot = new Bot();
+        return BotRunner.getInstance(bot, identity, new PublicKey(new byte[32]));        
     }
 }

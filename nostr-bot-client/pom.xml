@@ -14,7 +14,23 @@
             <artifactId>nostr-bot-job</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <artifactId>nostr-base</artifactId>
+            <version>${nostr-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
+            <artifactId>nostr-util</artifactId>
+            <version>${nostr-java.version}</version>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <properties>
         <exec.mainClass>nostr.bot.client.NostrBotClient</exec.mainClass>
     </properties>

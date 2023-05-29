@@ -1,0 +1,60 @@
+<project name="nostr-bot" default="build" basedir="./target" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+    <property name="version" value="0.1-SNAPSHOT" />
+    <property name="jar" value="/usr/lib/jvm/jdk-17/bin/jar" />
+    <property name="main.class" value="nostr.bot.client.NostrBotClient" />
+    <property name="lib.dir" value="./libs" />
+    <property name="manifestFile" value="${basedir}/MANIFEST.MF" />
+    <property name="classpathFile" value="${basedir}/classpath.txt" />
+
+    <path id="dep.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <!-- Generate the plugins.inc file containing the list of jars -->
+    <target name="classpath-file-task">
+        <manifestclasspath property="manifest_cp" jarfile="nostr-bot-client-${version}.jar">
+            <classpath refid="dep.classpath" />
+        </manifestclasspath>
+        <echo file="${classpathFile}"><![CDATA[Class-Path: ${manifest_cp}
+        ]]></echo>
+    </target>
+
+    <target name="replace-token" depends="classpath-file-task">
+        <copy file="${basedir}/../MANIFEST.MF.tpl" tofile="${manifestFile}"/>
+        <replaceregexp file="${manifestFile}" match="CLASSPATH_ENTRIES" replace="${manifest_cp}" />
+    </target>
+
+    <target name="build" depends="replace-token">
+        <delete file="${basedir}/nostr-bot-client-${version}.jar" />
+
+        <!-- Create a temporary directory to hold the JAR contents -->
+        <mkdir dir="${basedir}/tmp" />
+
+        <!-- Copy the classes folder to the temporary directory -->
+        <copy todir="${basedir}/tmp">
+            <fileset dir="${basedir}/classes" />
+        </copy>
+
+        <!-- Create a ZIP fileset for the libs folder -->
+        <zipfileset dir="${basedir}/libs" prefix="libs" />
+
+        <!-- Create the JAR file using the contents of the temporary directory and the libs folder -->
+        <jar destfile="${basedir}/nostr-bot-client-${version}.jar">
+            <fileset dir="${basedir}/tmp" />
+            <zipfileset dir="${basedir}/libs" prefix="libs" />
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+                <attribute name="Class-Path" value="${manifest_cp}" />
+            </manifest>
+        </jar>
+
+        <!-- Delete the temporary directory and files -->
+        <delete dir="${basedir}/tmp" />
+        <delete file="${manifestFile}" />
+        <delete file="${classpathFile}" />
+    </target>
+
+</project>

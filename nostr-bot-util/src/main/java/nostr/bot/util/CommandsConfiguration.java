@@ -4,7 +4,6 @@
  */
 package nostr.bot.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
@@ -35,9 +34,9 @@ public class CommandsConfiguration extends BotBaseConfiguration {
                 .collect(Collectors.joining(","));
     }
     
-    public Identity getAdmin(String commandId) throws FileNotFoundException, IOException, NostrException {
-        String idFile = getFileLocation("file.admin." + commandId);
-        return new Identity(idFile);
-    }
+//    public Identity getAdmin(String commandId) throws IOException, NostrException {
+//        String idFile = getProperty("file.admin",commandId);
+//        return new Identity(idFile);
+//    }
 
 }

@@ -5,10 +5,13 @@
 package nostr.bot.job.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.java.Log;
+import nostr.base.PublicKey;
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.IBot;
@@ -17,23 +20,18 @@ import nostr.bot.job.ISubscriber;
 import nostr.bot.util.BotUtil;
 import nostr.id.Identity;
 import nostr.util.NostrException;
-import nostr.ws.handler.response.DefaultEventResponseHandler;
 
 /**
  *
  * @author eric
  */
 @Log
-public abstract class AbstractSubscriber extends DefaultEventResponseHandler implements ISubscriber {
-    
-    public AbstractSubscriber(String subscriptionId, String jsonEvent) {
-        super(subscriptionId, jsonEvent);
-    }
+@Data
+@AllArgsConstructor
+public abstract class AbstractSubscriber implements ISubscriber {
 
-    @Override
-    public void process() throws NostrException {
-        this.subscribe();
-    }
+    private String subscriptionId;
+    private String jsonEvent;
 
     @Override
     public void subscribe() {
@@ -43,26 +41,35 @@ public abstract class AbstractSubscriber extends DefaultEventResponseHandler imp
 
         executor.submit(() -> {
             try {
-                final var botRunner  = getBotRunner();
+                final var botRunner = getBotRunner();
 
                 final var message = getContent();
 
                 final var command = CommandParser.builder().command(message).botRunner(botRunner).build().parse();
 
                 log.log(Level.INFO, "Executing the bot runner...");
-                botRunner.execute(command);
-                
-            } catch (IOException | NostrException ex) {
+                botRunner.execute(command, BotUtil.unmarshallEvent(jsonEvent));
+
+            } catch (IOException ex) {
                 log.log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
+            } catch (ParseException | NostrException ex) {
+                log.log(Level.SEVERE, null, ex);
             }
         });
     }
-    
-    protected abstract String getContent(); 
-    
-    private static BotRunner getBotRunner() throws IOException, NostrException {        
-        final IBot bot = new Bot("/commands.properties");
-        return new BotRunner(bot, BotUtil.IDENTITY);
-    }    
+
+    protected abstract String getContent();
+
+    private BotRunner getBotRunner() throws IOException, NostrException {
+        final IBot bot = new Bot();
+        //return BotRunner.getInstance(bot, BotUtil.IDENTITY, getRecipient());
+        return BotRunner.getInstance(bot, Identity.getInstance(), getRecipient());
+    }
+
+    private PublicKey getRecipient() {
+        final var dmEvent = BotUtil.unmarshallEvent(jsonEvent);
+        return dmEvent.getPubKey();
+    }
+
 }

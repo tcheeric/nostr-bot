@@ -17,7 +17,7 @@ public interface ICommand<T> {
 
     public String getHelp();
 
-    public void setParameters(Object[] params, Context context);
+    public void setParameterValues(Object[] params, Context context);
 
     public String getId();
     

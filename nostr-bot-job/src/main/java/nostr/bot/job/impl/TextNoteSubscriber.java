@@ -4,10 +4,22 @@
  */
 package nostr.bot.job.impl;
 
+import lombok.extern.java.Log;
+
 /**
  *
  * @author eric
  */
-public class TextNoteSubscriber {
+@Log
+public class TextNoteSubscriber extends AbstractSubscriber {
+
+    public TextNoteSubscriber(String subscriptionId, String jsonEvent) {
+        super(subscriptionId, jsonEvent);
+    }
+
+    @Override
+    protected String getContent() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

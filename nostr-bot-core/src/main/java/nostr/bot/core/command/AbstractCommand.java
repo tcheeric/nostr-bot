@@ -36,7 +36,7 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
     }
 
     @Override
-    public void setParameters(Object[] params, Context context) {
+    public void setParameterValues(Object[] params, Context context) {
         if (params[0].toString().substring(1).equals(this.getId())) {
             List<Field> fields = getParamFields();
             int i = 1;
@@ -48,10 +48,15 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
                 }
                 
                 try {
-                    new PropertyDescriptor(f.getName(), this.getClass()).getWriteMethod().invoke(this, getParameterValue(params[i].toString(), f));
+                    final var propertyDescriptor = new PropertyDescriptor(f.getName(), f.getDeclaringClass());
+                    
+                    final var writeMethod = propertyDescriptor.getWriteMethod();
+                    writeMethod.setAccessible(true);
+                    final var attributeValue = getParameterValue(params[i].toString(), f);
+                    writeMethod.invoke(this, attributeValue);
 
                     // Add parameters to context
-                    Object attr = new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(this);
+                    var attr = propertyDescriptor.getReadMethod().invoke(this);
                     context.addParamValue(this.getId() + "#" + f.getName(), attr);
 
                     // Increment
@@ -100,11 +105,11 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
         return 17 * getId().hashCode();
     }
 
-    private List<Field> getParamFields() {
+    protected List<Field> getParamFields() {
         Field[] fields = this.getClass().getDeclaredFields();
         List<Field> result = new ArrayList<>();
         Arrays.asList(fields).stream().filter(f -> f.getDeclaredAnnotation(Param.class) != null).forEach(f -> result.add(f));
-        Collections.sort(result, (Field t, Field t1) -> t.getDeclaredAnnotation(Param.class).index() - t1.getDeclaredAnnotation(Param.class).index());
+        Collections.sort(result, (Field t0, Field t1) -> t0.getDeclaredAnnotation(Param.class).index() - t1.getDeclaredAnnotation(Param.class).index());
         return result;
     }
 

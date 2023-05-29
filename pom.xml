@@ -12,9 +12,35 @@
         <module>nostr-bot-job</module>
         <module>nostr-bot-client</module>
     </modules>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <showDeprecation>true</showDeprecation>
+                        <annotationProcessorPaths>
+                            <annotationProcessorPath>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </annotationProcessorPath>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <inherited>false</inherited>
@@ -31,22 +57,63 @@
                         </execution>
                     </executions>
                 </plugin>
-            </plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.5.0</version>
+                    <executions>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>
+                                    ${outputDirectory}
+                                </outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.1.0</version>                    
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>libs/</classpathPrefix>                                
+                                <mainClass>nostr.bot.client.NostrBotClient</mainClass>                                
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+            </plugins>                            
         </pluginManagement>
     </build>
+    
     <properties>
         <hibernate-validator-cdi.version>8.0.0.Final</hibernate-validator-cdi.version>        
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+
         <expressly.version>5.0.0</expressly.version>
-        <lombok.version>1.18.26</lombok.version>
-        <nostr-id.version>0.1-SNAPSHOT</nostr-id.version>
-        <nostr-poh-util.version>0.1-SNAPSHOT</nostr-poh-util.version>
-        <nostr-base.version>0.1-SNAPSHOT</nostr-base.version>
+
+        <nostr-java.version>v0.002.01</nostr-java.version>
+
         <quartz.version>2.3.2</quartz.version>
-        <maven-surefire-plugin>2.22.0</maven-surefire-plugin>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin>3.0.0</maven-surefire-plugin>
+        
+        <lombok.version>1.18.26</lombok.version>
+
+        <outputDirectory>${project.build.directory}/libs</outputDirectory>
+
     </properties>
 </project>

@@ -4,6 +4,8 @@
  */
 package nostr.bot.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,8 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
-import nostr.id.Identity;
-import nostr.util.NostrException;
+import nostr.event.impl.GenericEvent;
+import nostr.id.Client;
 
 /**
  *
@@ -22,17 +24,16 @@ import nostr.util.NostrException;
 @Log
 public class BotUtil {
 
-    public static Identity IDENTITY = getIdentity();
-
+    //public static Identity IDENTITY = Identity.getInstance();
     public static long readLongFromFile(String filename) {
 
-        long value = 0;
+        long value = System.currentTimeMillis();
         try {
 
             if (!new File(filename).exists()) {
-                log.log(Level.INFO, "Creating the data file...");
+                log.log(Level.FINE, "Creating the data file...");
                 if (new File(filename).createNewFile()) {
-                    log.log(Level.INFO, "File {0} created!s", filename);
+                    log.log(Level.FINE, "File {0} created!s", filename);
                 } else {
                     throw new IOException(String.format("Could not create file %s", filename));
                 }
@@ -50,7 +51,7 @@ public class BotUtil {
     }
 
     public static void storeLongToFile(long value, String filename) {
-        log.log(Level.INFO, "Storing value {0} to file...", value);
+        log.log(Level.FINER, "Storing value {0} to file...", value);
         try {
             try (FileOutputStream fileOutputStream = new FileOutputStream(filename); DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream)) {
                 dataOutputStream.writeLong(value);
@@ -60,13 +61,37 @@ public class BotUtil {
         }
     }
 
-    private static Identity getIdentity() {
+    public static Client createClient() {
+        final var client = Client.getInstance("/relays.properties");
+
+        do {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                log.log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
+        } while (client.getThreadPool().getCompletedTaskCount() < (client.getRelays().size() / 2));
+
+        return client;
+    }
+
+    public static GenericEvent unmarshallEvent(String jsonEvent) {
         try {
-            return new Identity("/profile.properties");
-        } catch (IOException | NostrException ex) {
-            log.log(Level.SEVERE, null, ex);
-            return null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            GenericEvent event = objectMapper.readValue(jsonEvent, GenericEvent.class);
+            return event;
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
+//    private static Identity getIdentity() {
+//        try {
+//            return new Identity("/profile.properties");
+//        } catch (IOException | NostrException ex) {
+//            log.log(Level.SEVERE, null, ex);
+//            return null;
+//        }
+//    }
 }
