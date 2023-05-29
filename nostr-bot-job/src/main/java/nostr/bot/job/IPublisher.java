@@ -4,11 +4,13 @@
  */
 package nostr.bot.job;
 
+import nostr.id.Client;
+
 /**
  *
  * @author eric
  */
 public interface IPublisher {
 
-    public void publish() throws Exception;
+    public void publish(Client client) throws Exception;
 }

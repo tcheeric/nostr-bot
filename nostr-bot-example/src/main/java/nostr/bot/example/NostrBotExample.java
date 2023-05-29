@@ -5,6 +5,7 @@ package nostr.bot.example;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 
 import java.util.logging.LogManager;
 
@@ -36,7 +37,7 @@ public class NostrBotExample {
         }
     }
 
-    public static void main(String[] args) throws IOException, NostrException {
+    public static void main(String[] args) throws IOException, NostrException, ParseException {
 
         final var botRunner = getBotRunner();
         
@@ -47,8 +48,9 @@ public class NostrBotExample {
     }
     
     private static BotRunner getBotRunner() throws IOException, NostrException {
-        final var identity = new Identity("/profile.properties");
+        //final var identity = new Identity("/profile.properties");
+        Identity identity = Identity.getInstance();
         final var bot = new Bot();
-        return new BotRunner(bot, identity, new PublicKey(new byte[32]));        
+        return BotRunner.getInstance(bot, identity, new PublicKey(new byte[32]));        
     }
 }

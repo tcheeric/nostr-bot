@@ -6,7 +6,6 @@
 module nostr.bot.client {
     requires nostr.bot.job;
     requires nostr.event;
-    requires nostr.json;
     requires static lombok;
     requires java.logging;
     requires nostr.id;
@@ -47,7 +46,6 @@ module nostr.bot.client {
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
     requires nostr.crypto;
-    requires nostr.types;
     requires nostr.util;
     
     exports nostr.bot.client;

@@ -4,8 +4,10 @@
  */
 package nostr.bot.job.impl;
 
-import nostr.base.PublicKey;
+import java.io.IOException;
 import nostr.event.Kind;
+import nostr.id.Identity;
+import nostr.util.NostrException;
 
 /**
  *
@@ -13,7 +15,7 @@ import nostr.event.Kind;
  */
 public class DMPublisher extends AbstractPublisher {
 
-    public DMPublisher(PublicKey publicKey) {
-        super(Kind.ENCRYPTED_DIRECT_MESSAGE, publicKey);
+    public DMPublisher() throws IOException, NostrException {
+        super(Kind.ENCRYPTED_DIRECT_MESSAGE, Identity.getInstance().getPublicKey());
     }        
 }

@@ -12,10 +12,8 @@ module nostr.bot.util {
     requires com.fasterxml.jackson.core;
     requires nostr.util;
     requires nostr.crypto;
-    requires nostr.types;
     requires nostr.id;
     requires nostr.event;
-    requires nostr.json;
     requires nostr.ws;
     requires org.eclipse.jetty.websocket.jetty.client;
     requires org.eclipse.jetty.websocket.jetty.api;

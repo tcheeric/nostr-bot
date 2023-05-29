@@ -17,9 +17,7 @@ module nostr.bot.example {
     requires com.fasterxml.classmate;
     requires nostr.id;
     requires nostr.event;
-    requires nostr.json;
     requires nostr.util;
-    requires nostr.types;
     requires nostr.ws;
     requires org.eclipse.jetty.websocket.jetty.client;
     requires org.eclipse.jetty.websocket.jetty.api;

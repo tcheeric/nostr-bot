@@ -33,22 +33,11 @@ public class AbstractPublisher implements IPublisher {
     private final PublicKey recipient;
 
     @Override
-    public void publish() throws IOException {
+    public void publish(Client client) throws IOException {
 
         var jc = new JobConfiguration("data");
         var datafile = jc.getDataFile();
-        var client = new Client("/relays.properties");
         long since;
-
-        //Wait it until tried to connect to a half of relays
-        do {
-            try {
-                log.log(Level.INFO, "Wait it until tried to connect to a half of relays...");
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        } while (client.getThreadPool().getCompletedTaskCount() < (client.getRelays().size() / 2));
 
         try {
             var kinds = new KindList();

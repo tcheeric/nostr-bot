@@ -4,11 +4,13 @@
  */
 package nostr.bot.job.impl;
 
+import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.extern.java.Log;
 import nostr.bot.util.BotUtil;
 import nostr.event.impl.GenericEvent;
-import nostr.event.unmarshaller.impl.EventUnmarshaller;
+import nostr.id.Identity;
 import nostr.util.NostrException;
 
 /**
@@ -25,11 +27,11 @@ public class DMSubscriber extends AbstractSubscriber {
     @Override
     protected String getContent() {
         try {
-            final GenericEvent event = new EventUnmarshaller(getJsonEvent()).unmarshall();
-            return BotUtil.IDENTITY.decryptDirectMessage(event.getContent(), event.getPubKey());
-        } catch (NostrException ex) {
+            final GenericEvent event = BotUtil.unmarshallEvent(getJsonEvent());
+            return Identity.getInstance().decryptDirectMessage(event.getContent(), event.getPubKey());
+        } catch (IOException | NostrException ex) {
             log.log(Level.SEVERE, null, ex);
-            return "";
+            throw new RuntimeException(ex);
         }
     }
 

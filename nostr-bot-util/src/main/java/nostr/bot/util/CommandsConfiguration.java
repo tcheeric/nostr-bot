@@ -34,9 +34,9 @@ public class CommandsConfiguration extends BotBaseConfiguration {
                 .collect(Collectors.joining(","));
     }
     
-    public Identity getAdmin(String commandId) throws IOException, NostrException {
-        String idFile = getProperty("file.admin",commandId);
-        return new Identity(idFile);
-    }
+//    public Identity getAdmin(String commandId) throws IOException, NostrException {
+//        String idFile = getProperty("file.admin",commandId);
+//        return new Identity(idFile);
+//    }
 
 }

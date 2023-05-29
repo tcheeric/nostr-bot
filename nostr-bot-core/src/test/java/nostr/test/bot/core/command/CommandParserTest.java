@@ -5,9 +5,11 @@
 package nostr.test.bot.core.command;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import nostr.base.PrivateKey;
+import nostr.base.PublicKey;
 import nostr.bot.core.command.CommandParser;
 import nostr.bot.core.command.ICommand;
 import nostr.test.bot.factory.EntitiyFactory;
@@ -25,7 +27,7 @@ import org.junit.jupiter.api.Test;
 public class CommandParserTest {
 
     @Test
-    public void testParse() throws IOException, NostrException {
+    public void testParse() throws IOException, NostrException, ParseException {
         System.out.println("testParse");
 
         var runner = EntitiyFactory.createBotRunner();
@@ -46,7 +48,7 @@ public class CommandParserTest {
 
         CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 12 Satoshi").build();
 
-        var thrown = Assertions.assertThrows(RuntimeException.class,
+        var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
                     instance.parse();
                 }
@@ -64,7 +66,7 @@ public class CommandParserTest {
 
         var thrown = Assertions.assertThrows(RuntimeException.class,
                 () -> {
-                    instance.getBotRunner().execute(instance.parse());
+                    instance.getBotRunner().execute(instance.parse(), EntitiyFactory.createDirectMessageEvent(new PublicKey(new byte[32]), new PublicKey(new byte[32]), "testParseFailValidation"));
                 }
         );
         Assertions.assertNotNull(thrown);
@@ -83,7 +85,7 @@ public class CommandParserTest {
         CommandParser instance = CommandParser.builder().botRunner(runner).command("command2").build();
         String topStackCommand = runner.getContext().getTopCommandFromStack();
 
-        var thrown = Assertions.assertThrows(RuntimeException.class,
+        var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
                     instance.parse();
                 }, String.format("Invalid command call. %s cannot be invoked after %s", new Object[]{"command2", topStackCommand})
@@ -99,9 +101,9 @@ public class CommandParserTest {
 
         CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 32 CSW").build();
 
-        var thrown = Assertions.assertThrows(RuntimeException.class,
+        var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
-                    runner.execute(instance.parse());
+                    runner.execute(instance.parse(), EntitiyFactory.createDirectMessageEvent(new PublicKey(new byte[32]), new PublicKey(new byte[32]), "testCheckSecurityNpubFail"));
                 }
         );
         Assertions.assertNotNull(thrown);

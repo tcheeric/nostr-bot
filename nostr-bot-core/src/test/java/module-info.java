@@ -7,8 +7,10 @@ module nostr.bot.test {
     requires nostr.bot.core;
     requires nostr.id;
     requires nostr.util;
+    requires nostr.event;
     requires static lombok;
     requires java.logging;
+    requires java.desktop;
     requires nostr.base;
     requires org.junit.jupiter.api;
     requires jakarta.validation;

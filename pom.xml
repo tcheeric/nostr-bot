@@ -100,7 +100,7 @@
 
         <expressly.version>5.0.0</expressly.version>
 
-        <nostr-java.version>0.1-SNAPSHOT</nostr-java.version>
+        <nostr-java.version>v0.002.01</nostr-java.version>
 
         <quartz.version>2.3.2</quartz.version>
         

@@ -15,7 +15,6 @@ module nostr.bot.job {
 
     requires nostr.base;
     requires nostr.event;
-    requires nostr.json;
     requires nostr.util;
     requires nostr.crypto;
     requires nostr.id;

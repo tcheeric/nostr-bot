@@ -10,12 +10,12 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>nostr-java</groupId>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
             <artifactId>nostr-base</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>nostr-java</groupId>
+            <groupId>com.github.tcheeric.nostr-java</groupId>
             <artifactId>nostr-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>

@@ -5,6 +5,7 @@
 package nostr.bot.job.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
@@ -14,7 +15,8 @@ import nostr.base.Relay;
 import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.command.CommandParser;
-import nostr.event.unmarshaller.impl.EventUnmarshaller;
+import static nostr.bot.util.BotUtil.unmarshallEvent;
+import nostr.event.impl.GenericEvent;
 import nostr.id.Identity;
 import nostr.util.NostrException;
 import nostr.ws.handler.command.spi.ICommandHandler;
@@ -29,12 +31,13 @@ public class BotCommandHandler implements ICommandHandler {
 
     @Override
     public void onEose(String subscriptionId, Relay relay) {
-        log.log(Level.INFO, "Command: {0} - Subscription ID: {1} - Relay {3}", new Object[]{Command.EOSE, subscriptionId, relay});
+        log.log(Level.INFO, "Command: {0} - Subscription ID: {1} - Relay {2}", new Object[]{Command.EOSE, subscriptionId, relay});
     }
 
     @Override
     public void onOk(String eventId, String reasonMessage, Reason reason, boolean result, Relay relay) {
         log.log(Level.INFO, "Command: {0} - Event ID: {1} - Reason: {2} ({3}) - Result: {4} - Relay {5}", new Object[]{Command.OK, eventId, reason, reasonMessage, result, relay});
+        BotRunner.updateEventStatus(eventId);
     }
 
     @Override
@@ -51,8 +54,10 @@ public class BotCommandHandler implements ICommandHandler {
 
             final var cmd = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
 
-            botRunner.execute(cmd);
-        } catch (IOException | NostrException ex) {
+            GenericEvent event = unmarshallEvent(jsonEvent);
+
+            botRunner.execute(cmd, event);
+        } catch (IOException | ParseException | NostrException ex) {
             log.log(Level.SEVERE, null, ex);
         }
 
@@ -64,21 +69,23 @@ public class BotCommandHandler implements ICommandHandler {
     }
 
     private BotRunner getBotRunner(String jsonEvent) throws IOException, NostrException {
-        final var identity = new Identity("/profile.properties");
+        //final var identity = new Identity("/profile.properties");
+        final var identity = Identity.getInstance();
         final var bot = new Bot();
-        final PublicKey recipient = getRecipient(jsonEvent);
+        final var recipient = getRecipient(jsonEvent);
 
-        return new BotRunner(bot, identity, recipient);
+        return BotRunner.getInstance(bot, identity, recipient);
     }
 
     private String getCommand(String jsonEvent) throws IOException, NostrException {
-        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
-        final var id = new Identity("/profile.properties");
+        final var dmEvent = unmarshallEvent(jsonEvent);
+        //final var id = new Identity("/profile.properties");
+        final var id = Identity.getInstance();
         return id.decryptDirectMessage(dmEvent.getContent(), dmEvent.getPubKey());
     }
 
     private PublicKey getRecipient(String jsonEvent) {
-        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
+        final var dmEvent = unmarshallEvent(jsonEvent);
         return dmEvent.getPubKey();
     }
 }

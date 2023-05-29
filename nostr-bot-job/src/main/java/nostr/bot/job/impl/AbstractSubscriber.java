@@ -5,6 +5,7 @@
 package nostr.bot.job.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import nostr.bot.core.IBot;
 import nostr.bot.core.command.CommandParser;
 import nostr.bot.job.ISubscriber;
 import nostr.bot.util.BotUtil;
-import nostr.event.unmarshaller.impl.EventUnmarshaller;
+import nostr.id.Identity;
 import nostr.util.NostrException;
 
 /**
@@ -47,11 +48,13 @@ public abstract class AbstractSubscriber implements ISubscriber {
                 final var command = CommandParser.builder().command(message).botRunner(botRunner).build().parse();
 
                 log.log(Level.INFO, "Executing the bot runner...");
-                botRunner.execute(command);
+                botRunner.execute(command, BotUtil.unmarshallEvent(jsonEvent));
 
-            } catch (IOException | NostrException ex) {
+            } catch (IOException ex) {
                 log.log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
+            } catch (ParseException | NostrException ex) {
+                log.log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -60,11 +63,12 @@ public abstract class AbstractSubscriber implements ISubscriber {
 
     private BotRunner getBotRunner() throws IOException, NostrException {
         final IBot bot = new Bot();
-        return new BotRunner(bot, BotUtil.IDENTITY, getRecipient());
+        //return BotRunner.getInstance(bot, BotUtil.IDENTITY, getRecipient());
+        return BotRunner.getInstance(bot, Identity.getInstance(), getRecipient());
     }
 
     private PublicKey getRecipient() {
-        final var dmEvent = new EventUnmarshaller(jsonEvent).unmarshall();
+        final var dmEvent = BotUtil.unmarshallEvent(jsonEvent);
         return dmEvent.getPubKey();
     }
 

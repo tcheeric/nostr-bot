@@ -19,9 +19,7 @@ module nostr.bot.core {
     requires com.fasterxml.jackson.core;
     requires nostr.crypto;
     requires nostr.event;
-    requires nostr.json;
     requires nostr.util;
-    requires nostr.types;
     requires nostr.ws;
     requires org.eclipse.jetty.websocket.jetty.client;
     requires org.eclipse.jetty.websocket.jetty.api;
@@ -42,6 +40,7 @@ module nostr.bot.core {
     requires org.bouncycastle.provider;
     requires nostr.bot.util;
     requires java.logging;
+    requires java.desktop;
     
     uses nostr.bot.core.command.ICommand;
         
