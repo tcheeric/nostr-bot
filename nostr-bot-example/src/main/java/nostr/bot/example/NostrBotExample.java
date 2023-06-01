@@ -48,9 +48,6 @@ public class NostrBotExample {
     }
     
     private static BotRunner getBotRunner() throws IOException, NostrException {
-        //final var identity = new Identity("/profile.properties");
-        Identity identity = Identity.getInstance();
-        final var bot = new Bot();
-        return BotRunner.getInstance(bot, identity, new PublicKey(new byte[32]));        
+        return BotRunner.getInstance(new PublicKey(new byte[32]));        
     }
 }

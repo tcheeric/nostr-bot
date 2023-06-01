@@ -4,7 +4,7 @@
     <parent>
         <groupId>nostr-bot</groupId>
         <artifactId>nostr-bot</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <artifactId>nostr-bot-job</artifactId>
     <packaging>jar</packaging>
@@ -12,7 +12,7 @@
     <!--
     <repositories>
         <repository>
-            <id>jitpack.io</id>
+            <com.github.tcheeric.nostr-javaid>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>    
@@ -20,8 +20,8 @@
         
     <dependencies>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-event</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-event</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
@@ -29,13 +29,13 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-base</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-base</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-id</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
@@ -49,20 +49,18 @@
             <version>${quartz.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-ws-handler-interface</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-ws-handler-interface</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
     </dependencies>
 
     <repositories>
+        <!--
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+                -->
     </repositories>
-
-    <properties>
-        <exec.mainClass>nostr.bot.job.NostrBotJob</exec.mainClass>
-    </properties>
 </project>

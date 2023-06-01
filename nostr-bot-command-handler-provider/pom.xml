@@ -6,14 +6,9 @@
         <artifactId>nostr-bot</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>nostr-bot-client</artifactId>
+    <artifactId>nostr-bot-command-handler-provider</artifactId>
     <packaging>jar</packaging>
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>nostr-bot-job</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${nostr-java.groupId}</groupId>
             <artifactId>nostr-java-base</artifactId>
@@ -21,19 +16,13 @@
         </dependency>
         <dependency>
             <groupId>${nostr-java.groupId}</groupId>
-            <artifactId>nostr-java-util</artifactId>
+            <artifactId>nostr-java-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nostr-bot-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
-    <repositories>
-        <!--
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-                -->
-    </repositories>
-    <properties>
-        <exec.mainClass>nostr.bot.client.NostrBotClient</exec.mainClass>
-    </properties>
 </project>

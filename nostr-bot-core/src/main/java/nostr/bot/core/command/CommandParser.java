@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.java.Log;
+import nostr.bot.core.Bot;
 import nostr.bot.core.BotRunner;
 import nostr.bot.core.Context;
 import nostr.bot.core.IBot;
@@ -43,7 +44,7 @@ public class CommandParser {
             
             final String cmdId = strCmd.substring(1);
       
-            IBot bot = botRunner.getBot();
+            IBot bot = new Bot();
             if (bot.getCommand(cmdId).isPresent()) {
                 cmd = bot.getCommand(cmdId).get();
                 Context context = botRunner.getContext();

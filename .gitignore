@@ -2,3 +2,4 @@
 /nostr-bot-job/target/
 /nostr-bot-client/target/
 /nostr-ws-handler/target/
+/nostr-bot-command-handler-provider/target/

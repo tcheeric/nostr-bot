@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.extern.java.Log;
-import nostr.base.BaseConfiguration;
+import nostr.util.AbstractBaseConfiguration;
 
 /**
  *
@@ -18,12 +18,12 @@ import nostr.base.BaseConfiguration;
 @Log
 @Data
 @EqualsAndHashCode(callSuper = false)
-abstract class BotBaseConfiguration extends BaseConfiguration {
+abstract class BotBaseConfiguration extends AbstractBaseConfiguration {
 
     private final String prefix;
 
-    public BotBaseConfiguration(String file, @NonNull String prefix) throws IOException {
-        super(file);
+    public BotBaseConfiguration(@NonNull String prefix) throws IOException {
+        super(new BotApplicationConfig());
         this.prefix = prefix;
     }
 

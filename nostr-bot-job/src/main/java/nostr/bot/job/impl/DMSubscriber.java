@@ -4,9 +4,7 @@
  */
 package nostr.bot.job.impl;
 
-import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.extern.java.Log;
 import nostr.bot.util.BotUtil;
 import nostr.event.impl.GenericEvent;
@@ -29,7 +27,7 @@ public class DMSubscriber extends AbstractSubscriber {
         try {
             final GenericEvent event = BotUtil.unmarshallEvent(getJsonEvent());
             return Identity.getInstance().decryptDirectMessage(event.getContent(), event.getPubKey());
-        } catch (IOException | NostrException ex) {
+        } catch (NostrException ex) {
             log.log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }

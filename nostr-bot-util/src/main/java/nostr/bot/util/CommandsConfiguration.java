@@ -7,8 +7,6 @@ package nostr.bot.util;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import nostr.id.Identity;
-import nostr.util.NostrException;
 
 /**
  *
@@ -17,12 +15,12 @@ import nostr.util.NostrException;
 @Log
 public class CommandsConfiguration extends BotBaseConfiguration {
 
+    
     public CommandsConfiguration(String prefix) throws IOException {
-        this("/commands.properties", prefix);
-    }
-
-    public CommandsConfiguration(String file, String prefix) throws IOException {
-        super(file, prefix);
+        super(prefix);
+        var configFile = ((BotApplicationConfig) getAppConfig()).getCommandsProperties();
+        configFile = configFile.startsWith("/") ? configFile : "/" + configFile;
+        load(configFile);
     }
 
     public String getAllCommands() throws IOException {
@@ -33,10 +31,5 @@ public class CommandsConfiguration extends BotBaseConfiguration {
                 .map(k -> properties.get(k).toString())
                 .collect(Collectors.joining(","));
     }
-    
-//    public Identity getAdmin(String commandId) throws IOException, NostrException {
-//        String idFile = getProperty("file.admin",commandId);
-//        return new Identity(idFile);
-//    }
 
 }

@@ -8,13 +8,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
-import nostr.base.PrivateKey;
 import nostr.base.PublicKey;
 import nostr.bot.core.command.CommandParser;
 import nostr.bot.core.command.ICommand;
 import nostr.test.bot.factory.EntitiyFactory;
 import nostr.test.bot.factory.command.TestCommand1;
-import nostr.id.Identity;
 import nostr.util.NostrException;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,7 +95,7 @@ public class CommandParserTest {
     public void testCheckSecurityNpubFail() throws Exception {
         System.out.println("testCheckSecurityNpubFail");
 
-        var runner = EntitiyFactory.createBotRunner(new Identity(new PrivateKey("00a5f09264f2a9c0db9b16b06e05ecd94ca3fd2fb7bb043a27232473e1525fdc")));        
+        var runner = EntitiyFactory.createBotRunner();        
 
         CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 32 CSW").build();
 

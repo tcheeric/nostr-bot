@@ -17,7 +17,6 @@ import nostr.bot.core.command.ICommand;
 import nostr.bot.core.command.annotation.Command;
 import nostr.bot.core.command.annotation.Whitelist;
 import nostr.bot.util.BotUtil;
-import nostr.bot.util.CommandsConfiguration;
 import nostr.bot.util.SecurityConfiguration;
 import nostr.event.impl.DirectMessageEvent;
 import nostr.event.impl.GenericEvent;
@@ -39,21 +38,19 @@ import org.hibernate.validator.HibernateValidator;
 public class BotRunner {
 
     private static BotRunner INSTANCE;
-    private final IBot bot;
     private final Context context;
     private final PublicKey recipient;
 
-    private BotRunner(IBot bot, Identity identity, PublicKey recipient) {
-        this.bot = bot;
+    private BotRunner(PublicKey recipient) {
 
-        this.context = Context.getInstance(BotUtil.createClient(), identity);
+        this.context = Context.getInstance(BotUtil.createClient(), Identity.getInstance());
 
         this.recipient = recipient;
     }
 
-    public static BotRunner getInstance(IBot bot, Identity identity, PublicKey recipient) {
+    public static BotRunner getInstance(PublicKey recipient) {
         if (INSTANCE == null) {
-            INSTANCE = new BotRunner(bot, identity, recipient);
+            INSTANCE = new BotRunner(recipient);
         }
 
         return INSTANCE;
@@ -124,7 +121,6 @@ public class BotRunner {
     }
 
     public static void auth(String challenge) throws IOException, NostrException {
-        //Identity identity = new Identity("/profile.properties");
         Identity identity = Identity.getInstance();
         INSTANCE.context.getClient().auth(identity, challenge);
     }
@@ -136,7 +132,6 @@ public class BotRunner {
             final var tagList = new TagList();
             tagList.add(PubKeyTag.builder().publicKey(recipient).build());
 
-            //final var sender = getAdmin(command);
             final var sender = Identity.getInstance();
             final var event = new DirectMessageEvent(sender.getPublicKey(), tagList, content);
 
@@ -149,7 +144,7 @@ public class BotRunner {
 
             client.send(message);
 
-        } catch (NostrException | IOException ex) {
+        } catch (NostrException ex) {
             log.log(Level.SEVERE, null, ex);
         }
     }
@@ -224,9 +219,4 @@ public class BotRunner {
 
         log.log(Level.FINE, "checkExecutionOrder of {0} : OK", command.getId());
     }
-
-//    private Identity getAdmin(ICommand command) throws IOException, NostrException {
-//        var config = new CommandsConfiguration(command.getId());
-//        return config.getAdmin(command.getId());
-//    }
 }

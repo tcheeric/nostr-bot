@@ -13,12 +13,12 @@ import java.io.IOException;
 public class JobConfiguration extends BotBaseConfiguration {
 
     public JobConfiguration(String prefix) throws IOException {
-        this("/nostr-job.properties", prefix);
+        super(prefix);
+        var configFile = ((BotApplicationConfig) getAppConfig()).getJobProperties();
+        configFile = configFile.startsWith("/") ? configFile : "/" + configFile;
+        load(configFile);
     }
 
-    public JobConfiguration(String file, String prefix) throws IOException {
-        super(file, prefix);
-    }
 
     public String getDataFile() {
         return getProperty("file");

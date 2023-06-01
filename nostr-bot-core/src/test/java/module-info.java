@@ -4,22 +4,32 @@
  */
 
 module nostr.bot.test {
+    // REQUIRES
+    requires static lombok;
+    requires java.logging;
+
     requires nostr.bot.core;
     requires nostr.id;
     requires nostr.util;
     requires nostr.event;
-    requires static lombok;
-    requires java.logging;
-    requires java.desktop;
     requires nostr.base;
-    requires org.junit.jupiter.api;
+    
+    requires java.desktop;
+
     requires jakarta.validation;
+
+    requires org.junit.jupiter.api;
     requires org.junit.platform.engine;
     requires org.junit.jupiter.engine;
     requires org.junit.platform.commons;
     
+    // EXPORTS
     exports nostr.test.bot.factory.command;
     exports nostr.test.bot.core.command;
     
+    // PROVIDES
     provides nostr.bot.core.command.ICommand with nostr.test.bot.factory.command.TestCommand1;
+    
+    // OPENS
+    opens nostr.test.bot.factory.command to org.hibernate.validator;
 }

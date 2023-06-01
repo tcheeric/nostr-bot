@@ -4,7 +4,7 @@
     <parent>
         <groupId>nostr-bot</groupId>
         <artifactId>nostr-bot</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <artifactId>nostr-bot-core</artifactId>
     <packaging>jar</packaging>
@@ -38,8 +38,8 @@
             <version>${hibernate-validator-cdi.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-id</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-id</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
@@ -67,9 +67,11 @@
         </dependency>
     </dependencies>
     <repositories>
+        <!--
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+                -->
     </repositories>
 </project>

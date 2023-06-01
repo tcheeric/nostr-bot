@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <groupId>nostr-bot</groupId>
         <artifactId>nostr-bot</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
+    
     <artifactId>nostr-bot-util</artifactId>
     <packaging>jar</packaging>
+    
     <dependencies>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-base</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-base</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tcheeric.nostr-java</groupId>
-            <artifactId>nostr-id</artifactId>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-id</artifactId>
+            <version>${nostr-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-util</artifactId>
             <version>${nostr-java.version}</version>
         </dependency>
     </dependencies>
     <repositories>
+        <!--
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+               -->
     </repositories>
 </project>

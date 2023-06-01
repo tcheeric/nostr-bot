@@ -64,7 +64,7 @@ public abstract class AbstractSubscriber implements ISubscriber {
     private BotRunner getBotRunner() throws IOException, NostrException {
         final IBot bot = new Bot();
         //return BotRunner.getInstance(bot, BotUtil.IDENTITY, getRecipient());
-        return BotRunner.getInstance(bot, Identity.getInstance(), getRecipient());
+        return BotRunner.getInstance(getRecipient());
     }
 
     private PublicKey getRecipient() {

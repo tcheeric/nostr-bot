@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nostr-bot</groupId>
     <artifactId>nostr-bot</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>nostr-bot-core</module>
@@ -11,6 +11,7 @@
         <module>nostr-bot-util</module>
         <module>nostr-bot-job</module>
         <module>nostr-bot-client</module>
+        <module>nostr-bot-command-handler-provider</module>
     </modules>
     
     <dependencyManagement>
@@ -100,7 +101,8 @@
 
         <expressly.version>5.0.0</expressly.version>
 
-        <nostr-java.version>v0.002.01</nostr-java.version>
+        <nostr-java.groupId>nostr-java</nostr-java.groupId>
+        <nostr-java.version>0.2-SNAPSHOT</nostr-java.version>
 
         <quartz.version>2.3.2</quartz.version>
         
@@ -111,7 +113,7 @@
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-surefire-plugin>3.0.0</maven-surefire-plugin>
         
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
 
         <outputDirectory>${project.build.directory}/libs</outputDirectory>
 

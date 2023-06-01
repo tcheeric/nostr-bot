@@ -7,20 +7,18 @@ import java.io.IOException;
 
 import lombok.extern.java.Log;
 
-
 /**
  *
  * @author eric
  */
 @Log
 public class SecurityConfiguration extends BotBaseConfiguration {
-    
-    public SecurityConfiguration(String prefix) throws IOException {
-        this("/security.properties", prefix);
-    }
 
-    public SecurityConfiguration(String file, String prefix) throws IOException {
-        super(file, prefix);
+    public SecurityConfiguration(String prefix) throws IOException {
+        super(prefix);
+        var configFile = ((BotApplicationConfig) getAppConfig()).getSecurityProperties();
+        configFile = configFile.startsWith("/") ? configFile : "/" + configFile;
+        load(configFile);
     }
 
     public String[] getGroups() {

@@ -62,13 +62,12 @@ public class BotUtil {
     }
 
     public static Client createClient() {
-        final var client = Client.getInstance("/relays.properties");
+        final var client = Client.getInstance();
 
         do {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-                log.log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
             }
         } while (client.getThreadPool().getCompletedTaskCount() < (client.getRelays().size() / 2));

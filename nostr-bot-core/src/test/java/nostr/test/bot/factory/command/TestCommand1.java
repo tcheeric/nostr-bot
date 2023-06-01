@@ -5,8 +5,10 @@
 package nostr.test.bot.factory.command;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import nostr.bot.core.Context;
 import nostr.bot.core.command.AbstractCommand;
@@ -23,6 +25,8 @@ import nostr.bot.core.command.annotation.Whitelist;
 @Log
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestCommand1 extends AbstractCommand<String> {
 
     @Param(index = 0, name = "len")

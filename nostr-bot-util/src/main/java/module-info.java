@@ -4,17 +4,21 @@
  */
 
 module nostr.bot.util {
-    requires nostr.base;
     requires static lombok;
     requires java.logging;
+    
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
+    
+    requires nostr.base;
     requires nostr.util;
     requires nostr.crypto;
     requires nostr.id;
     requires nostr.event;
     requires nostr.ws;
+    requires nostr.ws.handler;    
+    
     requires org.eclipse.jetty.websocket.jetty.client;
     requires org.eclipse.jetty.websocket.jetty.api;
     requires org.eclipse.jetty.websocket.jetty.common;
@@ -30,9 +34,11 @@ module nostr.bot.util {
     requires org.eclipse.jetty.alpn.client;
     requires org.eclipse.jetty.http2.http.client.transport;
     requires org.eclipse.jetty.alpn.java.client;
+    
     requires org.slf4j;
+    
     requires org.bouncycastle.provider;
-    requires nostr.ws.handler;    
+    
     
     exports nostr.bot.util;
 }
