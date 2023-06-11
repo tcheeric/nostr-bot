@@ -20,7 +20,7 @@ import nostr.bot.core.command.annotation.Whitelist;
  *
  * @author eric
  */
-@Command(id = "command1", name = "TestCommand1 Command", parents = {})
+@Command(id = "command1", name = "TestCommand1 Command")
 @Whitelist(npubs = "npub1abcdef")
 @Log
 @Data

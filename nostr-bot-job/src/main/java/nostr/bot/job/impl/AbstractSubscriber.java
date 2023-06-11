@@ -13,12 +13,10 @@ import lombok.Data;
 import lombok.extern.java.Log;
 import nostr.base.PublicKey;
 import nostr.bot.core.Bot;
-import nostr.bot.core.BotRunner;
-import nostr.bot.core.IBot;
 import nostr.bot.core.command.CommandParser;
+import nostr.bot.core.command.ICommand;
 import nostr.bot.job.ISubscriber;
 import nostr.bot.util.BotUtil;
-import nostr.id.Identity;
 import nostr.util.NostrException;
 
 /**
@@ -41,14 +39,16 @@ public abstract class AbstractSubscriber implements ISubscriber {
 
         executor.submit(() -> {
             try {
-                final var botRunner = getBotRunner();
+                final var bot = getBot();
 
                 final var message = getContent();
 
-                final var command = CommandParser.builder().command(message).botRunner(botRunner).build().parse();
+                CommandParser.builder().command(message).bot(bot).build().parse();
 
                 log.log(Level.INFO, "Executing the bot runner...");
-                botRunner.execute(command, BotUtil.unmarshallEvent(jsonEvent));
+                
+                ICommand command = bot.getContext().getCommand();                
+                bot.execute(command, BotUtil.unmarshallEvent(jsonEvent));
 
             } catch (IOException ex) {
                 log.log(Level.SEVERE, null, ex);
@@ -61,10 +61,8 @@ public abstract class AbstractSubscriber implements ISubscriber {
 
     protected abstract String getContent();
 
-    private BotRunner getBotRunner() throws IOException, NostrException {
-        final IBot bot = new Bot();
-        //return BotRunner.getInstance(bot, BotUtil.IDENTITY, getRecipient());
-        return BotRunner.getInstance(getRecipient());
+    private Bot getBot() throws IOException, NostrException {
+        return Bot.getInstance(getRecipient());
     }
 
     private PublicKey getRecipient() {

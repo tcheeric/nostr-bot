@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import nostr.base.PublicKey;
 import nostr.bot.core.command.CommandParser;
-import nostr.bot.core.command.ICommand;
 import nostr.test.bot.factory.EntitiyFactory;
 import nostr.test.bot.factory.command.TestCommand1;
 import nostr.util.NostrException;
@@ -28,23 +27,25 @@ public class CommandParserTest {
     public void testParse() throws IOException, NostrException, ParseException {
         System.out.println("testParse");
 
-        var runner = EntitiyFactory.createBotRunner();
+        var bot = EntitiyFactory.createBot();
 
-        CommandParser instance = CommandParser.builder().botRunner(runner).command("!command1 12 Satoshi").build();
-        ICommand result = instance.parse();
+        CommandParser instance = CommandParser.builder().bot(bot).command("!command1 12 Satoshi").build();
+        instance.parse();
 
-        assertEquals(TestCommand1.class, result.getClass());
-        assertEquals(12, ((TestCommand1) result).getLength());
-        assertEquals("Satoshi", ((TestCommand1) result).getName());
+        var command = instance.getBot().getContext().getCommand();
+
+        assertEquals(TestCommand1.class, command.getClass());
+        assertEquals(12, ((TestCommand1) command).getLength());
+        assertEquals("Satoshi", ((TestCommand1) command).getName());
     }
 
     @Test
     public void testParseFail() throws IOException, NostrException {
         System.out.println("testParseFail");
 
-        var runner = EntitiyFactory.createBotRunner();
+        var bot = EntitiyFactory.createBot();
 
-        CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 12 Satoshi").build();
+        CommandParser instance = CommandParser.builder().bot(bot).command("command1 12 Satoshi").build();
 
         var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
@@ -55,21 +56,24 @@ public class CommandParserTest {
     }
 
     @Test
-    public void testParseFailValidation() throws IOException, NostrException {
+    public void testParseFailValidation() throws IOException, NostrException, ParseException {
         System.out.println("testParseFailValidation");
 
-        var runner = EntitiyFactory.createBotRunner();
+        var bot = EntitiyFactory.createBot();
 
-        CommandParser instance = CommandParser.builder().botRunner(runner).command("!command1 12").build();
+        CommandParser instance = CommandParser.builder().bot(bot).command("!command1 12").build();
+
+        instance.parse();
 
         var thrown = Assertions.assertThrows(RuntimeException.class,
                 () -> {
-                    instance.getBotRunner().execute(instance.parse(), EntitiyFactory.createDirectMessageEvent(new PublicKey(new byte[32]), new PublicKey(new byte[32]), "testParseFailValidation"));
+                    final var command = bot.getContext().getCommand();
+                    bot.execute(command, EntitiyFactory.createDirectMessageEvent(new PublicKey(new byte[32]), new PublicKey(new byte[32]), "testParseFailValidation"));
                 }
         );
         Assertions.assertNotNull(thrown);
 
-        var context = instance.getBotRunner().getContext();
+        var context = instance.getBot().getContext();
         List<Object> values = Arrays.asList(context.getValues("command1"));
         Assertions.assertNotNull(values.stream().filter(o -> (o instanceof RuntimeException)).findFirst().get());
     }
@@ -78,15 +82,15 @@ public class CommandParserTest {
     public void testCheckCommandIsInScopeError() throws IOException, NostrException {
         System.out.println("testCheckCommandIsInScopeError");
 
-        var runner = EntitiyFactory.createBotRunner();
+        var bot = EntitiyFactory.createBot();
 
-        CommandParser instance = CommandParser.builder().botRunner(runner).command("command2").build();
-        String topStackCommand = runner.getContext().getTopCommandFromStack();
+        CommandParser instance = CommandParser.builder().bot(bot).command("command2").build();
+        var command = bot.getContext().getCommand();
 
         var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
                     instance.parse();
-                }, String.format("Invalid command call. %s cannot be invoked after %s", new Object[]{"command2", topStackCommand})
+                }, String.format("Invalid command call. %s cannot be invoked after %s", new Object[]{"command2", command.getId()})
         );
         Assertions.assertNotNull(thrown);
     }
@@ -95,13 +99,13 @@ public class CommandParserTest {
     public void testCheckSecurityNpubFail() throws Exception {
         System.out.println("testCheckSecurityNpubFail");
 
-        var runner = EntitiyFactory.createBotRunner();        
+        var bot = EntitiyFactory.createBot();
 
-        CommandParser instance = CommandParser.builder().botRunner(runner).command("command1 32 CSW").build();
+        CommandParser instance = CommandParser.builder().bot(bot).command("command1 32 CSW").build();
 
         var thrown = Assertions.assertThrows(ParseException.class,
                 () -> {
-                    runner.execute(instance.parse(), EntitiyFactory.createDirectMessageEvent(new PublicKey(new byte[32]), new PublicKey(new byte[32]), "testCheckSecurityNpubFail"));
+                    instance.parse();
                 }
         );
         Assertions.assertNotNull(thrown);

@@ -1,6 +1,6 @@
 <project name="nostr-bot" default="build" basedir="./target" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-    <property name="version" value="0.1-SNAPSHOT" />
+    <property name="version" value="0.2-SNAPSHOT" />
     <property name="jar" value="/usr/lib/jvm/jdk-17/bin/jar" />
     <property name="main.class" value="nostr.bot.client.NostrBotClient" />
     <property name="lib.dir" value="./libs" />

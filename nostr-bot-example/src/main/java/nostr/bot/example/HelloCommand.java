@@ -19,7 +19,7 @@ import nostr.util.NostrException;
  *
  * @author eric
  */
-@Command(id = "hello", name = "Hello Command", parents = {})
+@Command(id = "hello", name = "Hello Command")
 @Whitelist(groups = {"admin"})
 @Log
 @Data

@@ -19,7 +19,5 @@ public interface ICommand<T> {
 
     public void setParameterValues(Object[] params, Context context);
 
-    public String getId();
-    
-    public String[] getSources();
+    public String getId();    
 }

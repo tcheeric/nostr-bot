@@ -1,1 +1,1 @@
-nostr.bot.command.handler.provider.BotCommandHandler
+nostr.bot.core.command.handler.provider.BotCommandHandler

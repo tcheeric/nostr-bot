@@ -48,11 +48,9 @@ public class NostrJob implements Job {
 
         switch (mode) {
             case PRIVATE -> {
-                //return new DMPublisher(BotUtil.IDENTITY.getPublicKey());
                 return new DMPublisher();
             }
             case PUBLIC -> {
-                //return new TextNotePublisher(BotUtil.IDENTITY.getPublicKey());
                 return new TextNotePublisher();
             }
             default ->

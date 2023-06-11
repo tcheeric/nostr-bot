@@ -26,12 +26,10 @@
         </dependency>
     </dependencies>
     <repositories>
-        <!--
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-                -->
     </repositories>
     <properties>
         <exec.mainClass>nostr.bot.client.NostrBotClient</exec.mainClass>

@@ -11,9 +11,6 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 import nostr.bot.core.Bot;
-import nostr.bot.core.BotRunner;
-import nostr.bot.core.Context;
-import nostr.bot.core.IBot;
 import nostr.util.NostrException;
 
 /**
@@ -27,34 +24,29 @@ public class CommandParser {
 
     @NonNull
     private final String command;
-    private final BotRunner botRunner;
-    
+    private final Bot bot;
+
     public static final String COMMAND_PREFIX = "!";
-    
-    public ICommand parse() throws ParseException, NostrException {
-        
+
+    public void parse() throws ParseException, NostrException {
+
         log.log(Level.INFO, ">>> Parsing content: {0}", command);
-        
-        ICommand cmd;
 
         String[] arr = command.split(" ");
         String strCmd = arr[0];
 
         if (strCmd.startsWith(COMMAND_PREFIX)) {
-            
+
             final String cmdId = strCmd.substring(1);
-      
-            IBot bot = new Bot();
-            if (bot.getCommand(cmdId).isPresent()) {
-                cmd = bot.getCommand(cmdId).get();
-                Context context = botRunner.getContext();
-                cmd.setParameterValues(arr, context);
-                return cmd;
+
+            var cmd = bot.getContext().getCommand();
+            log.log(Level.INFO, ">>>>>>>>>! Command class: {0}", cmd);
+            if (cmd.getId().equals(cmdId)) {
+                cmd.setParameterValues(arr, bot.getContext());
+                return;
             }
-            
-            throw new NostrException(String.format("Command %s plug-in not loaded in classpath", cmdId));
         }
 
-        throw new ParseException("Parsing error at index 0", 0);
+        throw new ParseException(command, 0);
     }
 }

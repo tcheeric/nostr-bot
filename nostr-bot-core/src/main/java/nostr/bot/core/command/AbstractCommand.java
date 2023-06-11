@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import nostr.bot.core.Context;
 import nostr.bot.core.command.annotation.Command;
@@ -25,15 +25,8 @@ import nostr.bot.core.command.annotation.Param;
  * @param <T>
  */
 @Log
-@Data
+@NoArgsConstructor
 public abstract class AbstractCommand<T> implements ICommand<T> {
-
-    public AbstractCommand() {
-        this.init();
-    }
-
-    protected final void init() {
-    }
 
     @Override
     public void setParameterValues(Object[] params, Context context) {
@@ -41,15 +34,15 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
             List<Field> fields = getParamFields();
             int i = 1;
             for (Field f : fields) {
-                
+
                 // Missing parameter - break to prevent an OoBE
                 if (i == params.length) {
                     break;
                 }
-                
+
                 try {
                     final var propertyDescriptor = new PropertyDescriptor(f.getName(), f.getDeclaringClass());
-                    
+
                     final var writeMethod = propertyDescriptor.getWriteMethod();
                     writeMethod.setAccessible(true);
                     final var attributeValue = getParameterValue(params[i].toString(), f);
@@ -76,12 +69,6 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
     public String getId() {
         final Command command = this.getClass().getDeclaredAnnotation(Command.class);
         return command != null ? command.id() : null;
-    }
-
-    @Override
-    public String[] getSources() {
-        final Command command = this.getClass().getDeclaredAnnotation(Command.class);
-        return command != null ? command.parents() : new String[]{};
     }
 
     @Override
@@ -113,7 +100,7 @@ public abstract class AbstractCommand<T> implements ICommand<T> {
         return result;
     }
 
-    private Object getParameterValue(String value, Field f) {
+    protected Object getParameterValue(String value, Field f) {
         if (String.class.isAssignableFrom(f.getType())) {
             return value;
         } else if (Number.class.isAssignableFrom(f.getType())) {

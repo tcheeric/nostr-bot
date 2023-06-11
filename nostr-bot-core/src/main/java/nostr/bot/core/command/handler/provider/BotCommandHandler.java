@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package nostr.bot.command.handler.provider;
+package nostr.bot.core.command.handler.provider;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -12,8 +12,9 @@ import lombok.extern.java.Log;
 import nostr.base.Command;
 import nostr.base.PublicKey;
 import nostr.base.Relay;
-import nostr.bot.core.BotRunner;
+import nostr.bot.core.Bot;
 import nostr.bot.core.command.CommandParser;
+import nostr.bot.core.command.ICommand;
 import static nostr.bot.util.BotUtil.unmarshallEvent;
 import nostr.event.impl.GenericEvent;
 import nostr.id.Client;
@@ -37,7 +38,7 @@ public class BotCommandHandler implements ICommandHandler {
     @Override
     public void onOk(String eventId, String reasonMessage, Reason reason, boolean result, Relay relay) {
         log.log(Level.INFO, "Command: {0} - Event ID: {1} - Reason: {2} ({3}) - Result: {4} - Relay {5}", new Object[]{Command.OK, eventId, reason, reasonMessage, result, relay});
-        BotRunner.updateEventStatus(eventId);
+        Bot.updateEventStatus(eventId);
     }
 
     @Override
@@ -48,15 +49,17 @@ public class BotCommandHandler implements ICommandHandler {
     @Override
     public void onEvent(String jsonEvent, String subId, Relay relay) {
         try {
-            final var botRunner = getBotRunner(jsonEvent);
+            final var bot =  getBot(jsonEvent);
 
             final String strCmd = getCommand(jsonEvent);
 
-            final var cmd = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
+            CommandParser.builder().command(strCmd).bot(bot).build().parse();
 
+            ICommand command = bot.getContext().getCommand();
+            
             GenericEvent event = unmarshallEvent(jsonEvent);
 
-            botRunner.execute(cmd, event);
+            bot.execute(command, event);
         } catch (IOException | ParseException | NostrException ex) {
             log.log(Level.SEVERE, null, ex);
         }
@@ -73,10 +76,10 @@ public class BotCommandHandler implements ICommandHandler {
         client.auth(identity, challenge, relay);
     }
 
-    private BotRunner getBotRunner(String jsonEvent) throws IOException, NostrException {
+    private Bot getBot(String jsonEvent) throws IOException, NostrException {
         final var recipient = getRecipient(jsonEvent);
 
-        return BotRunner.getInstance(recipient);
+        return Bot.getInstance(recipient);
     }
 
     private String getCommand(String jsonEvent) throws IOException, NostrException {

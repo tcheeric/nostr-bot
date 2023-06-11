@@ -21,6 +21,7 @@ module nostr.bot.core {
     requires nostr.event;
     requires nostr.util;
     requires nostr.ws;
+    requires nostr.ws.handler;
     requires org.eclipse.jetty.websocket.jetty.client;
     requires org.eclipse.jetty.websocket.jetty.api;
     requires org.eclipse.jetty.websocket.jetty.common;
@@ -47,4 +48,6 @@ module nostr.bot.core {
     exports nostr.bot.core;
     exports nostr.bot.core.command;
     exports nostr.bot.core.command.annotation;
+    
+    provides nostr.ws.handler.command.spi.ICommandHandler with nostr.bot.core.command.handler.provider.BotCommandHandler;
 }

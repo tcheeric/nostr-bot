@@ -26,12 +26,5 @@ public @interface Command {
      * Command name.
      * @return 
      */
-    String name();
-    
-    /**
-     * Use this to define the sequence of execution. The parents-array contains the list of commands that can be executed prior to the current one.
-     * @return 
-     */
-    @Deprecated(forRemoval = true)
-    String[] parents();
+    String name();    
 }

@@ -13,10 +13,9 @@ import lombok.extern.java.Log;
 import nostr.base.PublicKey;
 
 import nostr.bot.core.Bot;
-import nostr.bot.core.BotRunner;
 import nostr.bot.core.command.CommandParser;
 
-import nostr.id.Identity;
+import nostr.bot.core.command.ICommand;
 
 import nostr.util.NostrException;
 
@@ -39,15 +38,16 @@ public class NostrBotExample {
 
     public static void main(String[] args) throws IOException, NostrException, ParseException {
 
-        final var botRunner = getBotRunner();
+        final var bot = getBot();
         
         final String strCmd = "!hello world";
-        final var helloCmd = CommandParser.builder().command(strCmd).botRunner(botRunner).build().parse();
-
-        botRunner.execute(helloCmd);
+        CommandParser.builder().command(strCmd).bot(bot).build().parse();
+        ICommand helloCmd = bot.getContext().getCommand();
+        
+        bot.execute(helloCmd);
     }
     
-    private static BotRunner getBotRunner() throws IOException, NostrException {
-        return BotRunner.getInstance(new PublicKey(new byte[32]));        
+    private static Bot getBot() throws IOException, NostrException {
+        return Bot.getInstance(new PublicKey(new byte[32]));        
     }
 }

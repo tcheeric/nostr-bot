@@ -11,7 +11,6 @@
         <module>nostr-bot-util</module>
         <module>nostr-bot-job</module>
         <module>nostr-bot-client</module>
-        <module>nostr-bot-command-handler-provider</module>
     </modules>
     
     <dependencyManagement>

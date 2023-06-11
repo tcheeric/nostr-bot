@@ -4,79 +4,73 @@
  */
 package nostr.bot.core;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.extern.java.Log;
+import nostr.bot.core.command.ICommand;
 import nostr.id.Client;
 import nostr.id.Identity;
 
 /**
  *
  * @author eric
+ * @param <T>
  */
 @Data
 @Log
-public class Context {
+public class Context<T extends ICommand> {
 
     private static Context INSTANCE;
-    
-    private final LinkedList<String> commandStack;
-    private final Map<String, Object> parameters;
-    private final Map<String, NostrEventStatus> processedEvents;
+
+    private T command;
+    private final Map<ContextElement, Object> parameters;
+    private final Map<ContextElement, NostrEventStatus> processedEvents;
     private final Identity identity;
     private final Client client;
-    
+
     private final static long FIVE_MINUTES = 60 * 5;
     final static String STATUS_PROCESSED = "OK";
     final static String STATUS_PENDING = "PENDING";
 
     private Context(Client client, Identity identity) {
-        this.commandStack = new LinkedList<>();
         this.parameters = new HashMap<>();
         this.processedEvents = new HashMap<>();
         this.client = client;
         this.identity = identity;
     }
-    
+
     public static final Context getInstance(Client client, Identity identity) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new Context(client, identity);
         }
-        
+
         return INSTANCE;
     }
 
-    public void addCommandToStack(String commandId) {
-        String key = System.currentTimeMillis() + "." + commandId;
-        this.commandStack.add(key);
-    }
-
     public void addParamValue(String param, Object value) {
-        String key = System.currentTimeMillis() + "." + param;
+        var key = new ContextElement(param);
         log.log(Level.FINE, "Adding parameter ({0}, {1}) to context", new Object[]{key, value});
         this.parameters.put(key, value);
     }
 
-    public String getTopCommandFromStack() {
-        if (commandStack.isEmpty()) {
-            return null;
-        }
-        return commandStack.getLast();
-    }
-
     public Object[] getValues(String key) {
-        Object[] keyArr = parameters.keySet().stream().filter(k -> k.contains("." + key)).toArray();
-        Object[] result = new Object[keyArr.length];
+        Object[] keyArr = parameters.keySet().stream().filter(k -> k.getKey().equals(key)).toArray();
+        var result = new Object[keyArr.length];
 
         int i = 0;
         for (Object o : keyArr) {
-            result[i++] = parameters.get(o.toString());
+            result[i++] = parameters.get((ContextElement) o);
         }
 
         return result;
@@ -87,7 +81,7 @@ public class Context {
             return false;
         }
 
-        this.processedEvents.put(eventId, NostrEventStatus.builder().date(date).build());
+        this.processedEvents.put(new ContextElement(eventId), NostrEventStatus.builder().date(date).build());
         return true;
     }
 
@@ -96,12 +90,20 @@ public class Context {
             return false;
         }
 
-        this.processedEvents.get(eventId).setStatus(status);
-        return true;
+        var optElement = getElement(eventId);
+        if (optElement.isPresent()) {
+            this.processedEvents.get(optElement.get()).setStatus(status);
+            return true;
+        }
+        return false;
     }
-    
+
     synchronized boolean containsEvent(String eventId) {
-        return this.processedEvents.containsKey(eventId);
+        return this.processedEvents.keySet().stream().anyMatch(c -> c.getKey().equals(eventId));
+    }
+
+    synchronized Optional<ContextElement> getElement(String eventId) {
+        return this.processedEvents.keySet().stream().filter(c -> c.getKey().equals(eventId)).findFirst();
     }
 
     void purgeStaleEvents() {
@@ -122,5 +124,20 @@ public class Context {
         private final long date;
         @Builder.Default
         private String status = STATUS_PENDING;
+    }
+
+    @Data
+    @ToString
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    private static class ContextElement implements Serializable {
+
+        private final Date date;        
+        private final String key;
+
+        public ContextElement(String key) {
+            this(new Date(), key);
+        }
+
     }
 }

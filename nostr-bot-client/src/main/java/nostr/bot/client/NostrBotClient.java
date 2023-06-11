@@ -24,9 +24,6 @@ public class NostrBotClient {
 
     public static void main(String[] args) throws InterruptedException, IOException, NostrException {
         NostrBotClient.schedule();
-//        Client client = BotUtil.createClient();
-//        Identity identity = new Identity("/profile.properties");
-//        client.auth(identity, String.valueOf(System.currentTimeMillis()));
     }
 
     public static void schedule() throws InterruptedException {

@@ -65,13 +65,16 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${nostr-java.groupId}</groupId>
+            <artifactId>nostr-java-ws-handler-interface</artifactId>
+            <version>${nostr-java.version}</version>
+        </dependency>
     </dependencies>
     <repositories>
-        <!--
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-                -->
     </repositories>
 </project>
